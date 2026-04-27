@@ -427,6 +427,45 @@
 
     .container.active { display: block; }
 
+    .container.show-mode > header,
+    .container.show-mode > .shows,
+    .container.show-mode > .cat-strip,
+    .container.show-mode > footer {
+      display: none;
+    }
+
+    .show-page {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 72px 28px 40px;
+      display: none;
+      animation: pageFade 0.8s ease both;
+    }
+
+    .show-page.active { display: block; }
+
+    .show-hero {
+      margin-bottom: 34px;
+      padding: 32px;
+      border-radius: 34px;
+      background: rgba(210,225,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.16), 0 18px 40px rgba(0,0,0,0.16);
+    }
+
+    .show-hero h1 {
+      font-size: clamp(2.3rem, 5vw, 4.2rem);
+      margin-bottom: 10px;
+      color: #f3f8ff;
+    }
+
+    .show-hero p {
+      color: #aebdca;
+      font-size: 1rem;
+    }
+
     header {
       text-align: left;
       margin-bottom: 46px;
@@ -900,7 +939,7 @@
       10% { opacity: .95; }
       90% { opacity: .95; }
       100% { opacity: 0; transform: translateY(115vh) rotate(35deg) scale(1.05); }
-    } 25% { opacity: 1; } 78% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } 100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(1.08); } }
+    }
     @keyframes subPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
     @keyframes bigFlash { 0%, 72% { opacity: 0; } 86% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes dogBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
@@ -989,9 +1028,9 @@
     <div class="liquid-orb two"></div>
     <div class="liquid-orb three"></div>
     <div class="liquid-pill"></div>
-    <div class="journey-text">hiiiii thakudu</div>
+    <div class="journey-text" id="journeyText">hiiiii thakudu</div>
     <div class="heart-rain" id="heartRain"></div>
-    <div class="journey-sub">opening your cozy room</div>
+    <div class="journey-sub" id="journeySub">opening your cozy room</div>
     <div class="liquid-pulse"></div>
   </div>
 
@@ -1010,20 +1049,22 @@
 
     <section class="shows" id="shows"></section>
 
-    <section class="panel hidden" id="seasonPanel">
-      <h2 id="selectedShowTitle">Select Season</h2>
-      <div class="buttons" id="seasonButtons"></div>
-    </section>
+    <section class="show-page" id="showPage">
+    <div class="show-hero">
+      <h1 id="showPageTitle">Show</h1>
+      <p id="showPageDescription">Select an episode and start watching.</p>
+    </div>
 
-    <section class="panel hidden" id="episodePanel">
-      <h2 id="selectedSeasonTitle">Select Episode</h2>
-      <div class="buttons" id="episodeButtons"></div>
+    <section class="panel" id="showEpisodePanel">
+      <h2 id="showEpisodeTitle">Episodes</h2>
+      <div class="buttons" id="showEpisodeButtons"></div>
     </section>
 
     <section class="player-box" id="playerBox">
       <iframe id="videoPlayer" allowfullscreen></iframe>
       <div class="now-playing" id="nowPlaying">Now Playing</div>
     </section>
+  </section>
 
     <div class="cat-strip" aria-label="secret love notes">
       <div class="cute-cat" style="--cat-color:#dff3ff" data-note="1"><span class="cat-heart">♥</span><div class="cat-face">•ᴗ•</div></div>
@@ -1082,12 +1123,7 @@
     let selectedSeason = null;
 
     const showsEl = document.getElementById("shows");
-    const seasonPanel = document.getElementById("seasonPanel");
-    const episodePanel = document.getElementById("episodePanel");
-    const seasonButtons = document.getElementById("seasonButtons");
-    const episodeButtons = document.getElementById("episodeButtons");
-    const selectedShowTitle = document.getElementById("selectedShowTitle");
-    const selectedSeasonTitle = document.getElementById("selectedSeasonTitle");
+    
     const playerBox = document.getElementById("playerBox");
     const videoPlayer = document.getElementById("videoPlayer");
     const nowPlaying = document.getElementById("nowPlaying");
@@ -1106,7 +1142,14 @@
     const journeyOverlay = document.getElementById("journeyOverlay");
     const heartRain = document.getElementById("heartRain");
     const loveOverlay = document.getElementById("loveOverlay");
+    const journeyText = document.getElementById("journeyText");
+    const journeySub = document.getElementById("journeySub");
     const mainPage = document.getElementById("mainPage");
+    const showPage = document.getElementById("showPage");
+    const showPageTitle = document.getElementById("showPageTitle");
+    const showPageDescription = document.getElementById("showPageDescription");
+    const showEpisodeTitle = document.getElementById("showEpisodeTitle");
+    const showEpisodeButtons = document.getElementById("showEpisodeButtons");
     const easterDog = document.getElementById("easterDog");
     const letterModal = document.getElementById("letterModal");
     const closeLetter = document.getElementById("closeLetter");
@@ -1176,54 +1219,51 @@
 
     function selectShow(index, card) {
       selectedShow = shows[index];
-      selectedSeason = null;
+      selectedSeason = 1;
       document.querySelectorAll(".show-card").forEach(c => c.classList.remove("active"));
       card.classList.add("active");
-      selectedShowTitle.textContent = selectedShow.name + " — Select Season";
-      seasonButtons.innerHTML = "";
-      episodeButtons.innerHTML = "";
-      videoPlayer.src = "";
-      playerBox.style.display = "none";
 
-      for (let season = 1; season <= selectedShow.seasons; season++) {
-        const btn = document.createElement("button");
-        btn.textContent = "Season " + season;
-        btn.onclick = () => selectSeason(season, btn);
-        seasonButtons.appendChild(btn);
-      }
+      journeyText.textContent = "hang tight thakudu";
+      journeySub.textContent = "i'm fetching the show for you";
+      createHeartRain();
+      journeyOverlay.classList.add("show");
 
-      seasonPanel.classList.remove("hidden");
-      episodePanel.classList.add("hidden");
+      setTimeout(() => {
+        journeyOverlay.classList.remove("show");
+        heartRain.innerHTML = "";
+        mainPage.classList.add("show-mode");
+        openShowPage();
+      }, 5200);
     }
 
-    function selectSeason(season, btn) {
-      selectedSeason = season;
-      document.querySelectorAll("#seasonButtons button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedSeasonTitle.textContent = selectedShow.name + " — Season " + season;
-      episodeButtons.innerHTML = "";
+    function openShowPage() {
+      showPageTitle.textContent = selectedShow.name;
+      showPageDescription.textContent = selectedShow.description;
+      showEpisodeTitle.textContent = selectedShow.name + " — Episodes";
+      showEpisodeButtons.innerHTML = "";
       videoPlayer.src = "";
       playerBox.style.display = "none";
 
-      const totalEpisodes = selectedShow.episodesPerSeason[season];
+      const totalEpisodes = selectedShow.episodesPerSeason[1];
       for (let episode = 1; episode <= totalEpisodes; episode++) {
         const epBtn = document.createElement("button");
         epBtn.textContent = "Episode " + episode;
         epBtn.onclick = () => playEpisode(episode, epBtn);
-        episodeButtons.appendChild(epBtn);
+        showEpisodeButtons.appendChild(epBtn);
       }
 
-      episodePanel.classList.remove("hidden");
+      showPage.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function playEpisode(episode, btn) {
-      document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#showEpisodeButtons button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const src = selectedShow.embedBase
-        .replaceAll("{season}", selectedSeason)
+        .replaceAll("{season}", 1)
         .replaceAll("{episode}", episode);
       videoPlayer.src = src;
-      nowPlaying.textContent = `${selectedShow.name} — Season ${selectedSeason}, Episode ${episode}`;
+      nowPlaying.textContent = `${selectedShow.name} — Episode ${episode}`;
       playerBox.style.display = "block";
       playerBox.scrollIntoView({ behavior: "smooth" });
     }
@@ -1350,6 +1390,8 @@
       userScreen.classList.remove("active");
 
       setTimeout(() => {
+        journeyText.textContent = "hiiiii thakudu";
+        journeySub.textContent = "opening your cozy room";
         createHeartRain();
         journeyOverlay.classList.add("show");
       }, 280);
@@ -1370,6 +1412,15 @@
     closeLetter.onclick = () => letterModal.classList.remove("show");
     backBtn.onclick = () => {
       createSparkles();
+
+      if (showPage.classList.contains("active")) {
+        showPage.classList.remove("active");
+        mainPage.classList.remove("show-mode");
+        videoPlayer.src = "";
+        playerBox.style.display = "none";
+        mainPage.classList.add("active");
+        return;
+      }
 
       if (mainPage.classList.contains("active")) {
         mainPage.classList.remove("active");
@@ -1394,6 +1445,7 @@
       const testLatency = getRandomLatency();
       console.assert(testLatency >= 8 && testLatency <= 45, "latency should stay between 8ms and 45ms");
       console.assert(shows.length >= 3, "at least three shows should be present");
+      console.assert(showPage && showEpisodeButtons, "show page and episode buttons should exist");
     }
 
     renderShows();
