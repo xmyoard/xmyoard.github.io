@@ -335,7 +335,7 @@
         inset 0 1px 2px rgba(255,255,255,0.42),
         inset 0 -18px 36px rgba(0,0,0,0.18),
         0 26px 90px rgba(0,0,0,0.28);
-      animation: liquidPill 3.2s cubic-bezier(.2,.8,.2,1) forwards;
+      animation: liquidPill 5s cubic-bezier(.2,.8,.2,1) forwards;
     }
 
     .liquid-pulse {
@@ -343,7 +343,7 @@
       inset: 0;
       background: radial-gradient(circle, rgba(255,255,255,.72), transparent 58%);
       opacity: 0;
-      animation: liquidFlash 3.35s ease forwards;
+      animation: liquidFlash 5s ease forwards;
     }
 
     .journey-text {
@@ -353,13 +353,32 @@
       align-items: center;
       justify-content: center;
       color: #f6fbff;
-      font-size: clamp(2rem, 6vw, 5rem);
+      font-size: clamp(2.4rem, 7vw, 5.4rem);
       font-weight: 900;
       letter-spacing: -1px;
       text-align: center;
-      text-shadow: 0 0 34px rgba(255,255,255,0.22);
-      animation: liquidText 3.3s ease forwards;
+      text-shadow: 0 0 34px rgba(255,255,255,0.24);
+      animation: liquidText 5s ease forwards;
       z-index: 2;
+    }
+
+    .heart-rain {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .heart-rain img {
+      position: absolute;
+      top: -80px;
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      opacity: 0;
+      animation: heartRain 4.8s linear infinite;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,0.24));
     }
 
     .journey-sub {
@@ -864,18 +883,24 @@
       50% { transform: translate(20px,-18px) rotate(4deg) scale(1.04); border-radius: 58% 42% 44% 56%; }
     }
     @keyframes liquidPill {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(.55); filter: blur(18px); }
-      35% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.55); }
+      22% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       78% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.55); filter: blur(22px); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.28); }
     }
     @keyframes liquidText {
-      0% { opacity: 0; transform: scale(.86); filter: blur(12px); }
-      30% { opacity: 1; transform: scale(1); filter: blur(0); }
-      78% { opacity: 1; transform: scale(1.02); }
-      100% { opacity: 0; transform: scale(1.18); filter: blur(16px); }
+      0% { opacity: 0; transform: scale(.88); }
+      20% { opacity: 1; transform: scale(1); }
+      82% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.08); }
     }
-    @keyframes liquidFlash { 0%, 72% { opacity: 0; } 86% { opacity: .75; } 100% { opacity: 0; } } 25% { opacity: 1; } 78% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } 100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(1.08); } }
+    @keyframes liquidFlash { 0%, 82% { opacity: 0; } 92% { opacity: .55; } 100% { opacity: 0; } }
+    @keyframes heartRain {
+      0% { opacity: 0; transform: translateY(-90px) rotate(0deg) scale(.75); }
+      10% { opacity: .95; }
+      90% { opacity: .95; }
+      100% { opacity: 0; transform: translateY(115vh) rotate(35deg) scale(1.05); }
+    } 25% { opacity: 1; } 78% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } 100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(1.08); } }
     @keyframes subPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
     @keyframes bigFlash { 0%, 72% { opacity: 0; } 86% { opacity: 1; } 100% { opacity: 0; } }
     @keyframes dogBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
@@ -964,7 +989,8 @@
     <div class="liquid-orb two"></div>
     <div class="liquid-orb three"></div>
     <div class="liquid-pill"></div>
-    <div class="journey-text">Welcome my love</div>
+    <div class="journey-text">hiiiii thakudu</div>
+    <div class="heart-rain" id="heartRain"></div>
     <div class="journey-sub">opening your cozy room</div>
     <div class="liquid-pulse"></div>
   </div>
@@ -1078,6 +1104,7 @@
     const userScreen = document.getElementById("userScreen");
     const aryaBtn = document.getElementById("aryaBtn");
     const journeyOverlay = document.getElementById("journeyOverlay");
+    const heartRain = document.getElementById("heartRain");
     const loveOverlay = document.getElementById("loveOverlay");
     const mainPage = document.getElementById("mainPage");
     const easterDog = document.getElementById("easterDog");
@@ -1251,6 +1278,21 @@
       backBtn.classList.remove("hidden");
     };
 
+    function createHeartRain() {
+      heartRain.innerHTML = "";
+      for (let i = 0; i < 34; i++) {
+        const heart = document.createElement("img");
+        heart.src = "https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png";
+        heart.alt = "heart hands";
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDelay = `${Math.random() * 1.6}s`;
+        heart.style.animationDuration = `${3.8 + Math.random() * 1.8}s`;
+        heart.style.width = `${32 + Math.random() * 28}px`;
+        heart.style.height = heart.style.width;
+        heartRain.appendChild(heart);
+      }
+    }
+
     function createSparkles() {
       const emojiLinks = [
         "https://em-content.zobj.net/source/apple/453/grinning-face-with-sweat_1f605.png",
@@ -1308,14 +1350,16 @@
       userScreen.classList.remove("active");
 
       setTimeout(() => {
+        createHeartRain();
         journeyOverlay.classList.add("show");
       }, 280);
 
       setTimeout(() => {
         journeyOverlay.classList.remove("show");
+        heartRain.innerHTML = "";
         mainPage.classList.add("active");
         backBtn.classList.remove("hidden");
-      }, 3650);
+      }, 5600);
     };
 
     document.querySelectorAll(".cute-cat").forEach(cat => {
