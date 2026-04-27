@@ -1,1 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For My Girl 💗</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans KR', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.08), transparent 20%),
+        linear-gradient(145deg, #10212b, #182d3c, #0d1722);
+      color: #eef5ff;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.03), transparent 18%),
+        linear-gradient(145deg, #101511, #182019, #202b22);
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+
+    .intro.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-card {
+      width: min(92%, 720px);
+      background: rgba(210,225,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(34px) saturate(180%);
+      -webkit-backdrop-filter: blur(34px) saturate(180%);
+      border-radius: 34px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.24),
+        inset 0 -8px 22px rgba(0,0,0,0.12),
+        0 24px 60px rgba(0,0,0,0.22);
+      animation: popIn 0.8s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro-card h1 {
+      color: #f2f5f1;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      letter-spacing: 0.4px;
+    }
+
+    .intro-card p {
+      color: #9da79d;
+      margin-bottom: 22px;
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    .cat-row {
+      display: flex;
+      flex-direction: row;
+      gap: 18px;
+      margin: 22px 0 26px;
+      font-size: 0.94rem;
+      color: #b7c0b6;
+      text-align: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .connect-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0.35;
+      transform: translateY(8px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+
+    .connect-item.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .connect-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(212,187,127,0.45);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .connect-dot::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      background: #d4bb7f;
+      transform: scale(0);
+      transition: transform .3s ease;
+      box-shadow: 0 0 12px rgba(212,187,127,0.8);
+    }
+
+    .connect-item.active .connect-dot::after { transform: scale(1); }
+
+    .connect-text { letter-spacing: 0.3px; }
+
+    .connect-panel {
+      margin-top: 18px;
+      background: #121713;
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid rgba(201,175,111,0.12);
+    }
+
+    .hidden-panel { display: none; }
+
+    .storage-title {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #c9af6f;
+      font-size: 0.85rem;
+      gap: 12px;
+    }
+
+    .storage-bar {
+      height: 10px;
+      background: #222d24;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .storage-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg,#8a7445,#d4bb7f);
+      border-radius: 999px;
+      transition: width 4.5s ease;
+    }
+
+    .storage-fill.loading { width: 76%; }
+
+    .launch-space { margin-top: 26px; }
+
+    .status-line {
+      color: #c9af6f;
+      font-size: 0.9rem;
+      margin-top: 14px;
+      min-height: 20px;
+    }
+
+    .screen {
+      min-height: calc(100vh - 48px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: pageFade 0.8s ease both;
+    }
+
+    .screen.active { display: flex; }
+
+    .user-card {
+      width: min(92%, 520px);
+      background: rgba(210,225,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(34px) saturate(180%);
+      -webkit-backdrop-filter: blur(34px) saturate(180%);
+      border-radius: 34px;
+      padding: 34px 26px;
+      text-align: center;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.24),
+        inset 0 -8px 22px rgba(0,0,0,0.12),
+        0 24px 60px rgba(0,0,0,0.22);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .netflix-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform 0.28s ease;
+    }
+
+    .netflix-profile:hover { transform: scale(1.06); }
+    .netflix-profile:hover .profile-pic {
+      border-color: #d4bb7f;
+      box-shadow: 0 0 40px rgba(212,187,127,0.35);
+    }
+    .netflix-profile:hover .profile-name { color: #ffffff; }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #b59a5d;
+      box-shadow: 0 0 35px rgba(181,154,93,0.28);
+      margin-bottom: 18px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-name {
+      font-size: 1.8rem;
+      color: #f3f5f2;
+      margin-bottom: 16px;
+    }
+
+    .profile-sub {
+      color: #9da79d;
+      margin-bottom: 24px;
+    }
+
+    .user-emojis {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 18px 0 24px;
+    }
+
+    .user-emojis img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      animation: floatCat 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,0.25));
+    }
+
+    .user-emojis img:nth-child(2) { animation-delay: .15s; }
+    .user-emojis img:nth-child(3) { animation-delay: .3s; }
+
+    .journey-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 79;
+      display: none;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(170,220,255,0.22), transparent 28%),
+        radial-gradient(circle at 70% 62%, rgba(255,255,255,0.12), transparent 24%),
+        linear-gradient(145deg, #07121a, #102638, #08121d);
+    }
+
+    .journey-overlay.show {
+      display: block;
+      animation: liquidSceneIn 0.55s ease both;
+    }
+
+    .liquid-orb {
+      position: absolute;
+      border-radius: 45% 55% 58% 42%;
+      background: rgba(210,225,255,0.16);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.35),
+        inset 0 -12px 28px rgba(0,0,0,0.14),
+        0 20px 70px rgba(0,0,0,0.22);
+      animation: liquidFloat 3.4s ease-in-out infinite;
+    }
+
+    .liquid-orb.one {
+      width: 340px;
+      height: 260px;
+      left: 10%;
+      top: 18%;
+    }
+
+    .liquid-orb.two {
+      width: 420px;
+      height: 280px;
+      right: 8%;
+      bottom: 15%;
+      animation-delay: .45s;
+    }
+
+    .liquid-orb.three {
+      width: 210px;
+      height: 180px;
+      left: 48%;
+      bottom: 22%;
+      animation-delay: .9s;
+    }
+
+    .liquid-pill {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(.82);
+      width: min(78vw, 780px);
+      min-height: 170px;
+      border-radius: 999px;
+      background: rgba(210,225,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(36px) saturate(190%);
+      -webkit-backdrop-filter: blur(36px) saturate(190%);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.42),
+        inset 0 -18px 36px rgba(0,0,0,0.18),
+        0 26px 90px rgba(0,0,0,0.28);
+      animation: liquidPill 3.2s cubic-bezier(.2,.8,.2,1) forwards;
+    }
+
+    .liquid-pulse {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, rgba(255,255,255,.72), transparent 58%);
+      opacity: 0;
+      animation: liquidFlash 3.35s ease forwards;
+    }
+
+    .journey-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f6fbff;
+      font-size: clamp(2rem, 6vw, 5rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      text-align: center;
+      text-shadow: 0 0 34px rgba(255,255,255,0.22);
+      animation: liquidText 3.3s ease forwards;
+      z-index: 2;
+    }
+
+    .journey-sub {
+      position: absolute;
+      left: 50%;
+      bottom: 25%;
+      transform: translateX(-50%);
+      color: rgba(238,245,255,0.72);
+      font-size: .95rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: subPulse 1.6s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    .love-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(181,154,93,0.22), rgba(12,16,13,0.96));
+      animation: loveFade 0.6s ease both;
+    }
+
+    .love-overlay.show { display: flex; }
+
+    .love-message {
+      text-align: center;
+      color: #fffaf0;
+      font-size: clamp(2.2rem, 7vw, 5rem);
+      font-weight: 900;
+      letter-spacing: 1px;
+      animation: loveZoom 1.2s ease both;
+      text-shadow: 0 0 35px rgba(181,154,93,0.45);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 72px 28px 40px;
+      animation: pageFade 0.8s ease both;
+      display: none;
+    }
+
+    .container.active { display: block; }
+
+    header {
+      text-align: left;
+      margin-bottom: 46px;
+      padding-top: 18px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: clamp(2.7rem, 6vw, 4.6rem);
+      color: #f3f5f2;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 1.02rem;
+      color: #95a093;
+    }
+
+    .shows {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+
+    .show-card {
+      min-height: 240px;
+      background: rgba(210,225,255,0.08);
+      border-radius: 30px;
+      padding: 28px;
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.16),
+        0 18px 40px rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background .28s ease;
+      animation: cardIn 0.6s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .show-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 22% 0%, rgba(255,255,255,0.18), transparent 42%);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .show-card::after {
+      content: "STREAM";
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      color: rgba(201,175,111,0.7);
+      font-size: 0.7rem;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+    }
+
+    .show-card:hover,
+    .show-card.active {
+      transform: translateY(-8px) scale(1.025);
+      background: rgba(210,225,255,0.11);
+      border-color: rgba(255,255,255,0.24);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.2),
+        0 18px 40px rgba(0,0,0,0.18);
+    }
+
+    .show-card h2 {
+      color: #eef2ec;
+      margin-bottom: 14px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .show-card p {
+      color: #a8b2a7;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .panel {
+      background: rgba(210,225,255,0.08);
+      border-radius: 30px;
+      padding: 30px;
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.18),
+        inset 0 -4px 18px rgba(0,0,0,0.12),
+        0 18px 40px rgba(0,0,0,0.16);
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-bottom: 22px;
+      animation: slideUp 0.45s ease both;
+    }
+
+    .panel h2 {
+      color: #eef2ec;
+      margin-bottom: 22px;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: rgba(210,225,255,0.10);
+      color: #eef5ff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, border-color .18s ease;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.2),
+        inset 0 -4px 12px rgba(0,0,0,0.08),
+        0 10px 24px rgba(0,0,0,0.12);
+    }
+
+    button:hover,
+    button.active {
+      background: rgba(255,255,255,0.16);
+      border-color: rgba(255,255,255,0.24);
+      color: white;
+      transform: scale(1.06);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.25),
+        inset 0 -4px 12px rgba(0,0,0,0.08),
+        0 16px 34px rgba(0,0,0,0.18);
+    }
+
+    button:disabled {
+      opacity: 0.75;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .player-box {
+      display: none;
+      margin-top: 34px;
+      background: rgba(210,225,255,0.08);
+      border-radius: 32px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.18),
+        inset 0 -4px 18px rgba(0,0,0,0.12),
+        0 18px 45px rgba(0, 0, 0, 0.16);
+      animation: netflixPop 0.45s ease both;
+    }
+
+    .player-box iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: none;
+      display: block;
+    }
+
+    .now-playing {
+      padding: 20px 24px;
+      background: #161d18;
+      color: #edf3eb;
+      font-weight: 700;
+    }
+
+    .hidden { display: none; }
+
+    .cat-strip {
+      width: 100%;
+      height: 118px;
+      margin: 42px auto 8px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0;
+      overflow: visible;
+    }
+
+    .cute-cat {
+      width: 78px;
+      height: 86px;
+      background: var(--cat-color);
+      border: 3px solid #2e352f;
+      border-bottom: none;
+      border-radius: 38px 38px 12px 12px;
+      position: relative;
+      margin-left: -6px;
+      cursor: pointer;
+      transition: transform .22s ease, filter .22s ease;
+      animation: catPeek 2.6s ease-in-out infinite;
+    }
+
+    .cute-cat:nth-child(even) { animation-delay: .2s; }
+
+    .cute-cat:hover {
+      transform: translateY(-13px) scale(1.05);
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,.35));
+    }
+
+    .cute-cat::before,
+    .cute-cat::after {
+      content: "";
+      position: absolute;
+      top: -22px;
+      width: 0;
+      height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-bottom: 30px solid var(--cat-color);
+      filter: drop-shadow(0 -2px 0 #2e352f);
+    }
+
+    .cute-cat::before { left: 7px; transform: rotate(-16deg); }
+    .cute-cat::after { right: 7px; transform: rotate(16deg); }
+
+    .cat-face {
+      position: absolute;
+      inset: 24px 0 auto;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #202820;
+      font-weight: 900;
+    }
+
+    .cat-heart {
+      position: absolute;
+      top: -44px;
+      right: -2px;
+      color: #e85c6a;
+      font-size: 1.15rem;
+      animation: floatHeart 2s ease-in-out infinite;
+    }
+
+    .easter-dog {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 25;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,187,127,0.35);
+      background: rgba(18,24,20,0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+      transition: transform .25s ease, box-shadow .25s ease;
+      animation: dogBounce 2.4s ease-in-out infinite;
+    }
+
+    .easter-dog:hover {
+      transform: scale(1.12) rotate(-4deg);
+      box-shadow: 0 0 45px rgba(212,187,127,0.35);
+    }
+
+    .easter-dog img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .letter-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(4,5,4,0.72);
+      backdrop-filter: blur(10px);
+    }
+
+    .letter-modal.show {
+      display: flex;
+      animation: loveFade .35s ease both;
+    }
+
+    .letter-modal.preparing {
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .letter-card {
+      width: min(92vw, 640px);
+      background: linear-gradient(145deg, #f7efe0, #fffaf0);
+      color: #2a241d;
+      border-radius: 30px;
+      padding: 32px;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.38);
+      position: relative;
+      animation: letterOpen .55s ease both;
+      border: 1px solid rgba(181,154,93,0.35);
+    }
+
+    .letter-card h2 {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      color: #4a3824;
+    }
+
+    .letter-card p {
+      line-height: 1.75;
+      color: #4c4338;
+      margin-bottom: 14px;
+      font-size: 1rem;
+    }
+
+    .close-letter {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      padding: 0;
+      background: #4a3824;
+      color: white;
+      box-shadow: none;
+    }
+
+    .sparkle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d4bb7f;
+      pointer-events: none;
+      animation: sparkleFly 1.5s ease-out forwards;
+      z-index: 90;
+    }
+
+    .emoji-float {
+      position: fixed;
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      pointer-events: none;
+      z-index: 91;
+      animation: emojiFly 1.8s ease-out forwards;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.28));
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      z-index: 140;
+      min-width: 138px;
+      height: 58px;
+      border-radius: 999px;
+      padding: 0 22px;
+      background: rgba(210,225,255,0.16);
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.35),
+        inset 0 -2px 8px rgba(0,0,0,0.12),
+        0 12px 30px rgba(0,0,0,0.18);
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+      overflow: hidden;
+    }
+
+    .back-btn::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0.05));
+      pointer-events: none;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: rgba(220,232,255,0.22);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.4),
+        inset 0 -2px 8px rgba(0,0,0,0.12),
+        0 16px 38px rgba(0,0,0,0.24);
+    }
+
+    .back-btn .back-icon {
+      width: 16px;
+      height: 16px;
+      border-left: 3px solid rgba(255,255,255,0.92);
+      border-bottom: 3px solid rgba(255,255,255,0.92);
+      transform: rotate(45deg);
+      margin-right: 2px;
+      z-index: 2;
+      position: relative;
+      opacity: 0.9;
+    }
+
+    .back-btn span {
+      position: relative;
+      z-index: 2;
+      color: #eef4ff;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.15);
+    }
+
+    .back-btn.hidden {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 28px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    @keyframes popIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes pageFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes netflixPop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+    @keyframes floatCat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes loveFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes loveZoom { 0% { opacity: 0; transform: scale(0.4) rotate(-4deg); } 55% { opacity: 1; transform: scale(1.12) rotate(2deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
+    @keyframes sparkleFly { from { opacity: 1; transform: translate(0, 0) scale(1); } to { opacity: 0; transform: translate(var(--x), var(--y)) scale(0); } }
+    @keyframes emojiFly { from { opacity: 1; transform: translate(0, 0) scale(0.7) rotate(0deg); } to { opacity: 0; transform: translate(var(--x), var(--y)) scale(1.15) rotate(var(--r)); } }
+    @keyframes liquidSceneIn { from { opacity: 0; filter: blur(18px); } to { opacity: 1; filter: blur(0); } }
+    @keyframes liquidFloat {
+      0%, 100% { transform: translate(0,0) rotate(0deg) scale(1); border-radius: 45% 55% 58% 42%; }
+      50% { transform: translate(20px,-18px) rotate(4deg) scale(1.04); border-radius: 58% 42% 44% 56%; }
+    }
+    @keyframes liquidPill {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.55); filter: blur(18px); }
+      35% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
+      78% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1.55); filter: blur(22px); }
+    }
+    @keyframes liquidText {
+      0% { opacity: 0; transform: scale(.86); filter: blur(12px); }
+      30% { opacity: 1; transform: scale(1); filter: blur(0); }
+      78% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0; transform: scale(1.18); filter: blur(16px); }
+    }
+    @keyframes liquidFlash { 0%, 72% { opacity: 0; } 86% { opacity: .75; } 100% { opacity: 0; } } 25% { opacity: 1; } 78% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } 100% { opacity: 0; transform: translateX(-50%) translateY(-18px) scale(1.08); } }
+    @keyframes subPulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+    @keyframes bigFlash { 0%, 72% { opacity: 0; } 86% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes dogBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes letterOpen { from { opacity: 0; transform: translateY(28px) scale(.94) rotate(-1deg); } to { opacity: 1; transform: translateY(0) scale(1) rotate(0); } }
+    @keyframes catPeek { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes floatHeart { 0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; } 50% { transform: translateY(-6px) scale(1.08); opacity: 1; } }
+
+    @media (max-width: 600px) {
+      body { padding: 14px; }
+      header h1 { font-size: 1.8rem; }
+      .intro-card h1 { font-size: 1.65rem; }
+      .panel { padding: 16px; }
+      .storage-title { flex-direction: column; }
+      .cat-row { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn hidden" id="backBtn">
+    <div class="back-icon"></div>
+    <span>Back</span>
+  </button>
+
+  <div class="intro" id="introScreen">
+    <div class="intro-card">
+      <h1 id="introTitle">our cozy netflix</h1>
+      <p id="introText">Private watch room ready • Open a secure session to connect with home storage.</p>
+
+      <div class="cat-row hidden-panel" id="connectStats">
+        <div class="connect-item" id="connect1">
+          <div class="connect-dot"></div>
+          <div class="connect-text">Storage Cluster Mounted</div>
+        </div>
+        <div class="connect-item" id="connect2">
+          <div class="connect-dot"></div>
+          <div class="connect-text">Media Cache Optimized</div>
+        </div>
+        <div class="connect-item" id="connect3">
+          <div class="connect-dot"></div>
+          <div class="connect-text">Secure Tunnel Active</div>
+        </div>
+        <div class="connect-item" id="connect4">
+          <div class="connect-dot"></div>
+          <div class="connect-text" id="latencyText">Latency: --ms</div>
+        </div>
+      </div>
+
+      <div class="connect-panel hidden-panel" id="storagePanel">
+        <div class="storage-title">
+          <span>Streaming Storage</span>
+          <span>1.29 TB total • 0.62 TB free • 0.67 TB used</span>
+        </div>
+        <div class="storage-bar">
+          <div class="storage-fill" id="storageFill"></div>
+        </div>
+      </div>
+
+      <div class="launch-space">
+        <button id="enterBtn">Open Secure Connection</button>
+        <button id="goUsersBtn" style="display:none; margin-left:10px;">Go Home</button>
+      </div>
+      <div class="status-line" id="statusLine"></div>
+    </div>
+  </div>
+
+  <section class="screen" id="userScreen">
+    <div class="user-card">
+      <p class="profile-sub" style="margin-bottom:32px;font-size:1.25rem;color:#eef2ec;">Who's watching?</p>
+      <div class="profile-grid">
+        <div class="netflix-profile" id="aryaBtn">
+          <img class="profile-pic" src="https://i.pinimg.com/originals/06/68/17/06681782b619ce545f1a1d2db9684db2.jpg" alt="Arya profile" />
+          <h1 class="profile-name">arya</h1>
+          <p class="profile-sub">tap profile</p>
+          <div class="user-emojis">
+            <img src="https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png" alt="heart hands" />
+            <img src="https://em-content.zobj.net/source/apple/453/face-blowing-a-kiss_1f618.png" alt="kiss" />
+            <img src="https://em-content.zobj.net/source/apple/453/star-struck_1f929.png" alt="star struck" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="journey-overlay" id="journeyOverlay">
+    <div class="liquid-orb one"></div>
+    <div class="liquid-orb two"></div>
+    <div class="liquid-orb three"></div>
+    <div class="liquid-pill"></div>
+    <div class="journey-text">Welcome my love</div>
+    <div class="journey-sub">opening your cozy room</div>
+    <div class="liquid-pulse"></div>
+  </div>
+
+  <div class="love-overlay" id="loveOverlay">
+    <div class="love-message">Welcome my love</div>
+  </div>
+
+  <div class="container" id="mainPage">
+    <header>
+      <h1 style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+        <span>Movie Night With You</span>
+        <img src="https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png" alt="heart hands" style="width:54px;height:54px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,0.28));" />
+      </h1>
+      <p id="mainStatus">Connected to home (ardofficial.net) • Premium private streaming active</p>
+    </header>
+
+    <section class="shows" id="shows"></section>
+
+    <section class="panel hidden" id="seasonPanel">
+      <h2 id="selectedShowTitle">Select Season</h2>
+      <div class="buttons" id="seasonButtons"></div>
+    </section>
+
+    <section class="panel hidden" id="episodePanel">
+      <h2 id="selectedSeasonTitle">Select Episode</h2>
+      <div class="buttons" id="episodeButtons"></div>
+    </section>
+
+    <section class="player-box" id="playerBox">
+      <iframe id="videoPlayer" allowfullscreen></iframe>
+      <div class="now-playing" id="nowPlaying">Now Playing</div>
+    </section>
+
+    <div class="cat-strip" aria-label="secret love notes">
+      <div class="cute-cat" style="--cat-color:#dff3ff" data-note="1"><span class="cat-heart">♥</span><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#ffd4d4" data-note="2"><span class="cat-heart">♥</span><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#ffe07a" data-note="3"><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#fff7f2" data-note="1"><span class="cat-heart">♥</span><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#a8d9f5" data-note="2"><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#ffd9c7" data-note="3"><span class="cat-heart">♥</span><div class="cat-face">•ᴗ•</div></div>
+      <div class="cute-cat" style="--cat-color:#dff3ff" data-note="1"><div class="cat-face">•ᴗ•</div></div>
+    </div>
+
+    <button class="easter-dog" id="easterDog" title="secret letter">
+      <img src="https://em-content.zobj.net/source/apple/453/four-leaf-clover_1f340.png" alt="lucky leaf" />
+    </button>
+
+    <footer>Made with love, comfort shows, and late night binge sessions 💗</footer>
+  </div>
+
+  <div class="letter-modal" id="letterModal">
+    <div class="letter-card">
+      <button class="close-letter" id="closeLetter">×</button>
+      <h2 id="letterTitle">For you, my love</h2>
+      <p id="letterLine1">I made this little place because I wanted you to feel special, even in the smallest things.</p>
+      <p id="letterLine2">Every show here is just an excuse to spend time with you, smile with you, and make ordinary nights feel a little more ours.</p>
+      <p id="letterLine3">So whenever you find this, remember: you are loved, you are precious, and you make my world softer.</p>
+      <p id="letterSign" style="margin-top:18px;font-weight:800;color:#4a3824;">— yours, always</p>
+    </div>
+  </div>
+
+  <script>
+    const shows = [
+      {
+        name: "Shooting Stars",
+        description: "A cute K-drama to watch together 💕",
+        seasons: 1,
+        episodesPerSeason: { 1: 15 },
+        embedBase: "https://vidapi.xyz/embed/tv/tt19800324/{season}/{episode}"
+      },
+      {
+        name: "Big Mouth",
+        description: "Mystery, suspense, and late-night binge vibes 🖤",
+        seasons: 1,
+        episodesPerSeason: { 1: 16 },
+        embedBase: "https://vidapi.xyz/embed/tv/tt21195490/{season}/{episode}"
+      },
+      {
+        name: "Head Over Heels",
+        description: "Soft vibes and cute moments together ✨",
+        seasons: 1,
+        episodesPerSeason: { 1: 12 },
+        embedBase: "https://vidapi.xyz/embed/tv/tt37146661/{season}/{episode}"
+      }
+    ];
+
+    let selectedShow = null;
+    let selectedSeason = null;
+
+    const showsEl = document.getElementById("shows");
+    const seasonPanel = document.getElementById("seasonPanel");
+    const episodePanel = document.getElementById("episodePanel");
+    const seasonButtons = document.getElementById("seasonButtons");
+    const episodeButtons = document.getElementById("episodeButtons");
+    const selectedShowTitle = document.getElementById("selectedShowTitle");
+    const selectedSeasonTitle = document.getElementById("selectedSeasonTitle");
+    const playerBox = document.getElementById("playerBox");
+    const videoPlayer = document.getElementById("videoPlayer");
+    const nowPlaying = document.getElementById("nowPlaying");
+
+    const introScreen = document.getElementById("introScreen");
+    const enterBtn = document.getElementById("enterBtn");
+    const introTitle = document.getElementById("introTitle");
+    const introText = document.getElementById("introText");
+    const connectStats = document.getElementById("connectStats");
+    const storagePanel = document.getElementById("storagePanel");
+    const storageFill = document.getElementById("storageFill");
+    const statusLine = document.getElementById("statusLine");
+    const goUsersBtn = document.getElementById("goUsersBtn");
+    const userScreen = document.getElementById("userScreen");
+    const aryaBtn = document.getElementById("aryaBtn");
+    const journeyOverlay = document.getElementById("journeyOverlay");
+    const loveOverlay = document.getElementById("loveOverlay");
+    const mainPage = document.getElementById("mainPage");
+    const easterDog = document.getElementById("easterDog");
+    const letterModal = document.getElementById("letterModal");
+    const closeLetter = document.getElementById("closeLetter");
+    const letterTitle = document.getElementById("letterTitle");
+    const letterLine1 = document.getElementById("letterLine1");
+    const letterLine2 = document.getElementById("letterLine2");
+    const letterLine3 = document.getElementById("letterLine3");
+    const letterSign = document.getElementById("letterSign");
+    const latencyText = document.getElementById("latencyText");
+    const backBtn = document.getElementById("backBtn");
+
+    const connectSteps = [
+      document.getElementById("connect1"),
+      document.getElementById("connect2"),
+      document.getElementById("connect3"),
+      document.getElementById("connect4")
+    ];
+
+    function getRandomLatency() {
+      return Math.floor(Math.random() * 38) + 8;
+    }
+
+    const startupLatency = getRandomLatency();
+    latencyText.textContent = `Latency: ${startupLatency}ms`;
+
+    const loveNotes = [
+      {
+        title: "with love",
+        line1: "~with love,",
+        line2: "xmyoard",
+        line3: "",
+        sign: ""
+      },
+      {
+        title: "thank you for existing",
+        line1: "Thank you for your existence. I hope you are always happy, and I will always be here for you.",
+        line2: "You make ordinary moments feel calm, soft, and safe.",
+        line3: "This tiny note is here because you deserve random reminders of love.",
+        sign: "— always here"
+      },
+      {
+        title: "my heart is full",
+        line1: "I have so so so much love for you in my heart that it does not fit.",
+        line2: "I may not always say it perfectly, but I hope you feel how real it is.",
+        line3: "You are my comfort person and one of my favourite thoughts.",
+        sign: "— with all my love"
+      },
+      {
+        title: "tiny reminder",
+        line1: "You make simple days feel warm, and this little corner exists just to remind you that you are loved.",
+        line2: "Whenever you open this page, I hope it feels like a small hug from me.",
+        line3: "No matter what we watch, the best part is that it is with you.",
+        sign: "— from me to you"
+      }
+    ];
+
+    function renderShows() {
+      showsEl.innerHTML = "";
+      shows.forEach((show, index) => {
+        const card = document.createElement("div");
+        card.className = "show-card";
+        card.innerHTML = `<h2>${show.name}</h2><p>${show.description}</p>`;
+        card.onclick = () => selectShow(index, card);
+        showsEl.appendChild(card);
+      });
+    }
+
+    function selectShow(index, card) {
+      selectedShow = shows[index];
+      selectedSeason = null;
+      document.querySelectorAll(".show-card").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+      selectedShowTitle.textContent = selectedShow.name + " — Select Season";
+      seasonButtons.innerHTML = "";
+      episodeButtons.innerHTML = "";
+      videoPlayer.src = "";
+      playerBox.style.display = "none";
+
+      for (let season = 1; season <= selectedShow.seasons; season++) {
+        const btn = document.createElement("button");
+        btn.textContent = "Season " + season;
+        btn.onclick = () => selectSeason(season, btn);
+        seasonButtons.appendChild(btn);
+      }
+
+      seasonPanel.classList.remove("hidden");
+      episodePanel.classList.add("hidden");
+    }
+
+    function selectSeason(season, btn) {
+      selectedSeason = season;
+      document.querySelectorAll("#seasonButtons button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedSeasonTitle.textContent = selectedShow.name + " — Season " + season;
+      episodeButtons.innerHTML = "";
+      videoPlayer.src = "";
+      playerBox.style.display = "none";
+
+      const totalEpisodes = selectedShow.episodesPerSeason[season];
+      for (let episode = 1; episode <= totalEpisodes; episode++) {
+        const epBtn = document.createElement("button");
+        epBtn.textContent = "Episode " + episode;
+        epBtn.onclick = () => playEpisode(episode, epBtn);
+        episodeButtons.appendChild(epBtn);
+      }
+
+      episodePanel.classList.remove("hidden");
+    }
+
+    function playEpisode(episode, btn) {
+      document.querySelectorAll("#episodeButtons button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const src = selectedShow.embedBase
+        .replaceAll("{season}", selectedSeason)
+        .replaceAll("{episode}", episode);
+      videoPlayer.src = src;
+      nowPlaying.textContent = `${selectedShow.name} — Season ${selectedSeason}, Episode ${episode}`;
+      playerBox.style.display = "block";
+      playerBox.scrollIntoView({ behavior: "smooth" });
+    }
+
+    enterBtn.onclick = () => {
+      enterBtn.disabled = true;
+      enterBtn.textContent = "Connecting...";
+      goUsersBtn.style.display = "none";
+      storageFill.classList.remove("loading");
+
+      const randomLatency = getRandomLatency();
+      latencyText.textContent = `Latency: ${randomLatency}ms`;
+      introTitle.textContent = "Connecting to home (ardofficial.net)";
+      introText.textContent = "Authenticating private route, mounting media storage, and preparing the watch session.";
+      connectStats.classList.remove("hidden-panel");
+      storagePanel.classList.remove("hidden-panel");
+      statusLine.textContent = "Handshake started • Waiting for storage response...";
+      connectSteps.forEach(step => step.classList.remove("active"));
+
+      setTimeout(() => {
+        connectSteps[0].classList.add("active");
+        statusLine.textContent = "Storage cluster mounted successfully...";
+      }, 700);
+
+      setTimeout(() => {
+        connectSteps[1].classList.add("active");
+        statusLine.textContent = "Optimizing media cache for smoother playback...";
+      }, 1600);
+
+      setTimeout(() => {
+        connectSteps[2].classList.add("active");
+        statusLine.textContent = "Encrypted tunnel verified and secured...";
+      }, 2600);
+
+      setTimeout(() => {
+        connectSteps[3].classList.add("active");
+        storageFill.classList.add("loading");
+        statusLine.textContent = `Latency stabilized at ${randomLatency}ms • Finalizing connection...`;
+      }, 3600);
+
+      setTimeout(() => {
+        enterBtn.textContent = "Connected";
+        introTitle.textContent = "Connected to home (ardofficial.net)";
+        statusLine.textContent = "Connected OK • Ready to continue.";
+        goUsersBtn.style.display = "inline-block";
+      }, 5200);
+    };
+
+    goUsersBtn.onclick = () => {
+      introScreen.classList.add("hide");
+      userScreen.classList.add("active");
+      backBtn.classList.remove("hidden");
+    };
+
+    function createSparkles() {
+      const emojiLinks = [
+        "https://em-content.zobj.net/source/apple/453/grinning-face-with-sweat_1f605.png",
+        "https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png",
+        "https://em-content.zobj.net/source/apple/453/face-blowing-a-kiss_1f618.png",
+        "https://em-content.zobj.net/source/apple/453/star-struck_1f929.png",
+        "https://em-content.zobj.net/source/apple/453/smiling-face-with-sunglasses_1f60e.png",
+        "https://em-content.zobj.net/source/apple/453/thumbs-up_light-skin-tone_1f44d-1f3fb_1f3fb.png"
+      ];
+
+      for (let i = 0; i < 38; i++) {
+        const sparkle = document.createElement("span");
+        sparkle.className = "sparkle";
+        sparkle.style.left = "50%";
+        sparkle.style.top = "50%";
+        sparkle.style.setProperty("--x", `${(Math.random() - 0.5) * 520}px`);
+        sparkle.style.setProperty("--y", `${(Math.random() - 0.5) * 520}px`);
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1600);
+      }
+
+      for (let i = 0; i < 18; i++) {
+        const emoji = document.createElement("img");
+        emoji.className = "emoji-float";
+        emoji.src = emojiLinks[i % emojiLinks.length];
+        emoji.style.left = "50%";
+        emoji.style.top = "50%";
+        emoji.style.setProperty("--x", `${(Math.random() - 0.5) * 650}px`);
+        emoji.style.setProperty("--y", `${(Math.random() - 0.5) * 650}px`);
+        emoji.style.setProperty("--r", `${(Math.random() - 0.5) * 80}deg`);
+        document.body.appendChild(emoji);
+        setTimeout(() => emoji.remove(), 1900);
+      }
+    }
+
+    function openLoveNote(index) {
+      const note = loveNotes[index] || loveNotes[1];
+      letterTitle.textContent = note.title;
+      letterLine1.textContent = note.line1;
+      letterLine2.textContent = note.line2;
+      letterLine3.textContent = note.line3;
+      letterSign.textContent = note.sign;
+
+      createSparkles();
+      letterModal.classList.add("preparing");
+
+      setTimeout(() => {
+        letterModal.classList.remove("preparing");
+        letterModal.classList.add("show");
+      }, 650);
+    }
+
+    aryaBtn.onclick = () => {
+      createSparkles();
+      userScreen.classList.remove("active");
+
+      setTimeout(() => {
+        journeyOverlay.classList.add("show");
+      }, 280);
+
+      setTimeout(() => {
+        journeyOverlay.classList.remove("show");
+        mainPage.classList.add("active");
+        backBtn.classList.remove("hidden");
+      }, 3650);
+    };
+
+    document.querySelectorAll(".cute-cat").forEach(cat => {
+      cat.onclick = () => openLoveNote(Number(cat.dataset.note));
+    });
+
+    easterDog.onclick = () => openLoveNote(0);
+    closeLetter.onclick = () => letterModal.classList.remove("show");
+    backBtn.onclick = () => {
+      createSparkles();
+
+      if (mainPage.classList.contains("active")) {
+        mainPage.classList.remove("active");
+        userScreen.classList.add("active");
+        return;
+      }
+
+      if (userScreen.classList.contains("active")) {
+        userScreen.classList.remove("active");
+        introScreen.classList.remove("hide");
+        backBtn.classList.add("hidden");
+      }
+    };
+
+    letterModal.onclick = event => {
+      if (event.target === letterModal) letterModal.classList.remove("show");
+    };
+
+    function runBasicTests() {
+      console.assert(typeof latencyText !== "undefined" && latencyText !== null, "latencyText should exist");
+      console.assert(!document.getElementById("introLatency"), "introLatency should not be required anymore");
+      const testLatency = getRandomLatency();
+      console.assert(testLatency >= 8 && testLatency <= 45, "latency should stay between 8ms and 45ms");
+      console.assert(shows.length >= 3, "at least three shows should be present");
+    }
+
+    renderShows();
+    runBasicTests();
+  </script>
+</body>
+</html>
