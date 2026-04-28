@@ -899,6 +899,252 @@
       display: none;
     }
 
+    .device-warning {
+      position: fixed;
+      inset: 0;
+      z-index: 180;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 35% 25%, rgba(210,225,255,0.18), transparent 30%),
+        linear-gradient(145deg, rgba(7,18,26,0.94), rgba(16,38,56,0.96));
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+
+    .device-warning.show {
+      display: flex;
+      animation: liquidSceneIn .45s ease both;
+    }
+
+    .device-warning.laptop-message {
+      overflow: hidden;
+    }
+
+    .device-warning.laptop-message::before,
+    .device-warning.laptop-message::after {
+      content: "";
+      position: absolute;
+      border-radius: 45% 55% 58% 42%;
+      background: rgba(210,225,255,0.14);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.28), 0 18px 60px rgba(0,0,0,0.22);
+      animation: liquidFloat 3.4s ease-in-out infinite;
+    }
+
+    .device-warning.laptop-message::before {
+      width: 320px;
+      height: 240px;
+      left: 8%;
+      top: 16%;
+    }
+
+    .device-warning.laptop-message::after {
+      width: 380px;
+      height: 260px;
+      right: 7%;
+      bottom: 14%;
+      animation-delay: .45s;
+    }
+
+    .laptop-message-text {
+      animation: softTextIn .65s ease both;
+    }
+
+    .good-emoji-row {
+      display: none;
+      justify-content: center;
+      gap: 14px;
+      margin: 18px 0 8px;
+    }
+
+    .good-emoji-row.show {
+      display: flex;
+      animation: phoneBackIn .65s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .good-emoji-row img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.22));
+      animation: floatCat 2.2s ease-in-out infinite;
+    }
+
+    .good-emoji-row img:nth-child(2) { animation-delay: .15s; }
+    .good-emoji-row img:nth-child(3) { animation-delay: .3s; }
+
+    .device-warning-card {
+      width: min(92vw, 620px);
+      border-radius: 34px;
+      padding: 38px 30px;
+      text-align: center;
+      background: rgba(210,225,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(34px) saturate(180%);
+      -webkit-backdrop-filter: blur(34px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.24),
+        inset 0 -8px 22px rgba(0,0,0,0.12),
+        0 24px 60px rgba(0,0,0,0.24);
+      animation: warningCardIn .65s cubic-bezier(.2,.8,.2,1) both;
+      position: relative;
+      z-index: 2;
+      transition: transform .45s ease, opacity .45s ease, filter .45s ease;
+    }
+
+    .device-warning-card.switching {
+      opacity: 0;
+      transform: translateY(18px) scale(.94);
+      filter: blur(10px);
+    }
+
+    .device-warning-card.risk-mode {
+      animation: riskPop .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .device-warning-card img.sad-emoji {
+      width: 84px;
+      height: 84px;
+      object-fit: contain;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 12px 22px rgba(0,0,0,0.25));
+    }
+
+    .device-warning-card h2 {
+      font-size: clamp(1.7rem, 5vw, 2.5rem);
+      margin-bottom: 14px;
+      color: #f6fbff;
+    }
+
+    .device-warning-card p {
+      color: #b8c7d4;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .adblock-link {
+      display: inline-flex;
+      text-decoration: none;
+      color: #eef5ff;
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: rgba(210,225,255,0.12);
+      font-weight: 800;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 10px 24px rgba(0,0,0,0.12);
+    }
+
+    .watch-phone-btn {
+      position: fixed;
+      left: 22px;
+      bottom: 22px;
+      z-index: 190;
+      width: 64px;
+      height: 64px;
+      padding: 0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(210,225,255,0.16);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+    }
+
+    .watch-phone-btn img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+
+    .risk-buttons {
+      display: none;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .risk-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .risk-buttons.show {
+      display: flex;
+    }
+
+    .warning-back-btn {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      z-index: 220;
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      padding: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(210,225,255,0.16);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.35),
+        0 12px 30px rgba(0,0,0,0.22);
+      transition: transform .22s ease, background .22s ease;
+    }
+
+    .warning-back-btn.show {
+      display: flex;
+      animation: warningBackIn .35s ease both;
+    }
+
+    .warning-back-btn:hover {
+      transform: translateY(-2px) scale(1.06);
+      background: rgba(220,232,255,0.22);
+    }
+
+    .warning-back-btn::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-left: 3px solid rgba(255,255,255,0.92);
+      border-bottom: 3px solid rgba(255,255,255,0.92);
+      transform: rotate(45deg);
+      margin-left: 5px;
+    }
+
+    .risk-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .final-phone-back {
+      display: none;
+      margin-top: 28px;
+      animation: phoneBackIn .65s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .final-phone-back.show {
+      display: inline-flex;
+    }
+
+    .device-warning.laptop-message .device-warning-card {
+      animation: warningCardIn .65s cubic-bezier(.2,.8,.2,1) both;
+    }
+
     footer {
       text-align: center;
       margin-top: 28px;
@@ -946,6 +1192,41 @@
     @keyframes letterOpen { from { opacity: 0; transform: translateY(28px) scale(.94) rotate(-1deg); } to { opacity: 1; transform: translateY(0) scale(1) rotate(0); } }
     @keyframes catPeek { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
     @keyframes floatHeart { 0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; } 50% { transform: translateY(-6px) scale(1.08); opacity: 1; } }
+    @keyframes softTextIn {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes softTextOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-12px) scale(1.02); }
+    }
+
+    .text-out {
+      animation: softTextOut .45s ease both !important;
+    }
+
+    @keyframes warningCardIn {
+      0% { opacity: 0; transform: translateY(26px) scale(.92); filter: blur(12px); }
+      70% { opacity: 1; transform: translateY(-4px) scale(1.02); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes phoneBackIn {
+      0% { opacity: 0; transform: translateY(18px) scale(.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes riskPop {
+      0% { opacity: 0; transform: translateY(28px) scale(.88); filter: blur(16px); }
+      55% { opacity: 1; transform: translateY(-5px) scale(1.03); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    @keyframes warningBackIn {
+      from { opacity: 0; transform: translateX(-12px) scale(.9); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
 
     @media (max-width: 600px) {
       body { padding: 14px; }
@@ -1061,7 +1342,7 @@
     </section>
 
     <section class="player-box" id="playerBox">
-      <iframe id="videoPlayer" allowfullscreen></iframe>
+      <iframe id="videoPlayer" allowfullscreen referrerpolicy="no-referrer"></iframe>
       <div class="now-playing" id="nowPlaying">Now Playing</div>
     </section>
   </section>
@@ -1081,6 +1362,39 @@
     </button>
 
     <footer>Made with love, comfort shows, and late night binge sessions 💗</footer>
+  </div>
+
+  <div class="device-warning" id="deviceWarning">
+    <button class="warning-back-btn" id="warningBackBtn"></button>
+    <div class="device-warning-card" id="deviceWarningCard">
+      
+      <img class="sad-emoji" id="deviceWarningEmoji" src="https://em-content.zobj.net/source/apple/453/pensive-face_1f614.png" alt="sad" />
+      <h2 id="deviceWarningTitle">sorry thakudu</h2>
+      <p id="deviceWarningText">our services are limited on phone. for better viewing experience, use a laptop with an adblocker installed.</p>
+      <div class="good-emoji-row" id="goodEmojiRow">
+        <img src="https://em-content.zobj.net/source/apple/453/smiling-face-with-horns_1f608.png" alt="horn smile" />
+        <img src="https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png" alt="heart hands" />
+        <img src="https://em-content.zobj.net/source/apple/453/face-blowing-a-kiss_1f618.png" alt="kiss" />
+      </div>
+      <a class="adblock-link" href="https://getadblock.com/en/" target="_blank" rel="noopener noreferrer">Get AdBlock</a>
+      <button class="final-phone-back" id="finalPhoneBackBtn">
+        <span>watch on phone itself</span>
+        <img src="https://em-content.zobj.net/source/apple/453/skull_1f480.png" alt="skull" style="width:24px;height:24px;margin-left:8px;vertical-align:middle;" />
+      </button>
+      <div class="risk-buttons hidden" id="riskButtons">
+        <button class="risk-btn" id="riskNoBtn">
+          <span>no ill use laptop</span>
+          <img src="https://em-content.zobj.net/source/apple/453/grinning-face-with-sweat_1f605.png" alt="sweat smile" />
+        </button>
+        <button class="risk-btn" id="riskYesBtn">
+          <span>yes</span>
+          <img src="https://em-content.zobj.net/source/apple/453/skull_1f480.png" alt="skull" />
+        </button>
+      </div>
+    </div>
+    <button class="watch-phone-btn" id="watchPhoneBtn" title="watch on phone itself">
+      <img src="https://em-content.zobj.net/source/apple/453/skull_1f480.png" alt="watch anyway" />
+    </button>
   </div>
 
   <div class="letter-modal" id="letterModal">
@@ -1121,6 +1435,9 @@
 
     let selectedShow = null;
     let selectedSeason = null;
+    let pendingMobileEpisode = null;
+    let pendingMobileButton = null;
+    let mobileWarningBypassed = false;
 
     const showsEl = document.getElementById("shows");
     
@@ -1160,6 +1477,18 @@
     const letterSign = document.getElementById("letterSign");
     const latencyText = document.getElementById("latencyText");
     const backBtn = document.getElementById("backBtn");
+    const deviceWarning = document.getElementById("deviceWarning");
+    const watchPhoneBtn = document.getElementById("watchPhoneBtn");
+    const deviceWarningCard = document.getElementById("deviceWarningCard");
+    const deviceWarningEmoji = document.getElementById("deviceWarningEmoji");
+    const deviceWarningTitle = document.getElementById("deviceWarningTitle");
+    const deviceWarningText = document.getElementById("deviceWarningText");
+    const riskButtons = document.getElementById("riskButtons");
+    const riskNoBtn = document.getElementById("riskNoBtn");
+    const riskYesBtn = document.getElementById("riskYesBtn");
+    const warningBackBtn = document.getElementById("warningBackBtn");
+    const finalPhoneBackBtn = document.getElementById("finalPhoneBackBtn");
+    const goodEmojiRow = document.getElementById("goodEmojiRow");
 
     const connectSteps = [
       document.getElementById("connect1"),
@@ -1256,7 +1585,11 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function playEpisode(episode, btn) {
+    function isPhoneDevice() {
+      return /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 700;
+    }
+
+    function startEpisode(episode, btn) {
       document.querySelectorAll("#showEpisodeButtons button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       const src = selectedShow.embedBase
@@ -1266,6 +1599,62 @@
       nowPlaying.textContent = `${selectedShow.name} — Episode ${episode}`;
       playerBox.style.display = "block";
       playerBox.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetDeviceWarningStyle() {
+      deviceWarning.classList.remove("laptop-message");
+      deviceWarningCard.classList.remove("switching", "risk-mode");
+      deviceWarningTitle.classList.remove("laptop-message-text", "text-out");
+      deviceWarningText.classList.remove("laptop-message-text", "text-out");
+      goodEmojiRow.classList.remove("show");
+      finalPhoneBackBtn.classList.remove("show");
+      document.querySelector(".adblock-link").style.display = "inline-flex";
+      deviceWarningEmoji.style.display = "inline-block";
+      watchPhoneBtn.classList.remove("hidden");
+      warningBackBtn.classList.remove("show");
+    }
+
+    function showPhoneWarning() {
+      resetDeviceWarningStyle();
+      deviceWarningEmoji.src = "https://em-content.zobj.net/source/apple/453/pensive-face_1f614.png";
+      deviceWarningTitle.textContent = "sorry thakudu";
+      deviceWarningText.textContent = "our services are limited on phone. for better viewing experience, use a laptop with an adblocker installed.";
+      riskButtons.classList.remove("show");
+      warningBackBtn.classList.add("show");
+      deviceWarning.classList.add("show");
+    }
+
+    function showRiskConfirm() {
+      deviceWarningCard.classList.add("switching");
+      createHeartRain();
+
+      setTimeout(() => {
+        deviceWarningEmoji.src = "https://em-content.zobj.net/source/apple/453/skull_1f480.png";
+        deviceWarningTitle.textContent = "are you sure thakudu?";
+        deviceWarningText.textContent = "oh you really wanna mess up your phone with virus and ads and still risk it for a show?";
+        document.querySelector(".adblock-link").style.display = "none";
+        riskButtons.classList.add("show");
+        warningBackBtn.classList.add("show");
+        deviceWarningCard.classList.remove("switching");
+        deviceWarningCard.classList.add("risk-mode");
+      }, 360);
+    }
+
+    function playEpisode(episode, btn) {
+      if (isPhoneDevice() && mobileWarningBypassed) {
+        startEpisode(episode, btn);
+        return;
+      }
+
+      if (isPhoneDevice()) {
+        pendingMobileEpisode = episode;
+        pendingMobileButton = btn;
+        createHeartRain();
+        showPhoneWarning();
+        return;
+      }
+
+      startEpisode(episode, btn);
     }
 
     enterBtn.onclick = () => {
@@ -1410,6 +1799,84 @@
 
     easterDog.onclick = () => openLoveNote(0);
     closeLetter.onclick = () => letterModal.classList.remove("show");
+
+    watchPhoneBtn.onclick = () => {
+      watchPhoneBtn.classList.add("hidden");
+      showRiskConfirm();
+    };
+
+    riskNoBtn.onclick = () => {
+      deviceWarning.classList.add("laptop-message");
+      deviceWarningEmoji.src = "https://em-content.zobj.net/source/apple/453/smiling-face-with-horns_1f608.png";
+      deviceWarningEmoji.style.display = "inline-block";
+      deviceWarningTitle.textContent = "good girl thakudu";
+      deviceWarningText.textContent = "hehehehe smart choice";
+      deviceWarningTitle.classList.add("laptop-message-text");
+      deviceWarningText.classList.add("laptop-message-text");
+      goodEmojiRow.classList.add("show");
+      document.querySelector(".adblock-link").style.display = "none";
+      riskButtons.classList.remove("show");
+      warningBackBtn.classList.add("hidden");
+      warningBackBtn.classList.remove("show");
+      watchPhoneBtn.classList.add("hidden");
+      finalPhoneBackBtn.classList.remove("show");
+      createHeartRain();
+
+      setTimeout(() => {
+        deviceWarningTitle.classList.add("text-out");
+        deviceWarningText.classList.add("text-out");
+        goodEmojiRow.classList.remove("show");
+      }, 5000);
+
+      setTimeout(() => {
+        deviceWarningTitle.classList.remove("text-out", "laptop-message-text");
+        deviceWarningText.classList.remove("text-out", "laptop-message-text");
+        void deviceWarningTitle.offsetWidth;
+        deviceWarningTitle.textContent = "alright fire up the laptop then";
+        deviceWarningText.textContent = "come back from laptop and we will watch properly.";
+        deviceWarningTitle.classList.add("laptop-message-text");
+        deviceWarningText.classList.add("laptop-message-text");
+        finalPhoneBackBtn.classList.add("show");
+      }, 5550);
+    };
+
+    riskYesBtn.onclick = () => {
+      mobileWarningBypassed = true;
+      deviceWarning.classList.remove("show");
+      resetDeviceWarningStyle();
+      heartRain.innerHTML = "";
+      if (pendingMobileEpisode && pendingMobileButton) {
+        startEpisode(pendingMobileEpisode, pendingMobileButton);
+      }
+    };
+
+    warningBackBtn.onclick = () => {
+      if (riskButtons.classList.contains("show")) {
+        deviceWarningCard.classList.add("switching");
+
+        setTimeout(() => {
+          showPhoneWarning();
+          watchPhoneBtn.classList.remove("hidden");
+          deviceWarningCard.classList.remove("switching");
+        }, 280);
+
+        return;
+      }
+
+      deviceWarning.classList.remove("show");
+      resetDeviceWarningStyle();
+      heartRain.innerHTML = "";
+    };
+
+    finalPhoneBackBtn.onclick = () => {
+      mobileWarningBypassed = true;
+      deviceWarning.classList.remove("show");
+      resetDeviceWarningStyle();
+      heartRain.innerHTML = "";
+      if (pendingMobileEpisode && pendingMobileButton) {
+        startEpisode(pendingMobileEpisode, pendingMobileButton);
+      }
+    };
     backBtn.onclick = () => {
       createSparkles();
 
@@ -1449,6 +1916,21 @@
     }
 
     renderShows();
+    // basic popup/ad protection outside the video iframe
+    // Note: cross-domain iframe ads cannot be fully blocked from this page.
+    const originalWindowOpen = window.open;
+    window.open = function (url, target, features) {
+      console.warn("Blocked popup attempt:", url);
+      return null;
+    };
+
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("a");
+      if (link && link.target === "_blank" && !link.closest("iframe") && !link.classList.contains("adblock-link")) {
+        e.preventDefault();
+      }
+    }, true);
+
     runBasicTests();
   </script>
 </body>
