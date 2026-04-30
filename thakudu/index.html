@@ -16,6 +16,11 @@
 
     html { scroll-behavior: smooth; }
 
+    * {
+      backface-visibility: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
     body {
       min-height: 100vh;
       background:
@@ -184,6 +189,9 @@
 
     .screen.active { display: flex; }
 
+    .screen.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
+    .screen.exiting { animation: sectionOut .38s ease both; }
+
     .user-card {
       width: min(92%, 520px);
       background: rgba(210,225,255,0.10);
@@ -280,6 +288,7 @@
     .journey-overlay.show {
       display: block;
       animation: liquidSceneIn 0.55s ease both;
+      will-change: opacity, filter;
     }
 
     .liquid-orb {
@@ -427,11 +436,69 @@
 
     .container.active { display: block; }
 
+    .container.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
+    .container.exiting { animation: sectionOut .38s ease both; }
+
     .container.show-mode > header,
-    .container.show-mode > .shows,
+    .container.show-mode > .category-menu,
+    .container.show-mode > .content-section,
     .container.show-mode > .cat-strip,
     .container.show-mode > footer {
       display: none;
+    }
+
+    .category-menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin-bottom: 34px;
+    }
+
+    .category-card {
+      min-height: 220px;
+      background: rgba(210,225,255,0.08);
+      border-radius: 34px;
+      padding: 32px;
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.16), 0 18px 40px rgba(0,0,0,0.16);
+      cursor: pointer;
+      transition: transform .28s ease, background .28s ease, border-color .28s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .category-card:hover {
+      transform: translateY(-8px) scale(1.025);
+      background: rgba(210,225,255,0.12);
+      border-color: rgba(255,255,255,0.24);
+    }
+
+    .category-menu.switching,
+    .content-section.switching,
+    .show-page.switching {
+      animation: sectionOut .38s ease both;
+      pointer-events: none;
+      will-change: opacity, transform, filter;
+    }
+
+    .content-section.entering,
+    .category-menu.entering,
+    .show-page.entering {
+      animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both;
+      will-change: opacity, transform, filter;
+    }
+
+    .category-card h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin-bottom: 12px;
+      color: #f3f8ff;
+    }
+
+    .category-card p {
+      color: #aebdca;
+      line-height: 1.5;
     }
 
     .show-page {
@@ -443,6 +510,8 @@
     }
 
     .show-page.active { display: block; }
+    .show-page.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
+    .show-page.exiting { animation: sectionOut .38s ease both; }
 
     .show-hero {
       margin-bottom: 34px;
@@ -1154,6 +1223,8 @@
 
     @keyframes popIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     @keyframes pageFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes sectionIn { from { opacity: 0; transform: translateY(22px) scale(.97); filter: blur(10px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+    @keyframes sectionOut { from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateY(-18px) scale(.97); filter: blur(10px); } }
     @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes netflixPop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
@@ -1328,7 +1399,26 @@
       <p id="mainStatus">Connected to home (ardofficial.net) • Premium private streaming active</p>
     </header>
 
-    <section class="shows" id="shows"></section>
+    <section class="category-menu" id="categoryMenu">
+      <div class="category-card" id="tvCategoryBtn">
+        <h2>TV Shows</h2>
+        <p>series, episodes, and cozy binge nights.</p>
+      </div>
+      <div class="category-card" id="movieCategoryBtn">
+        <h2>Movies</h2>
+        <p>single-watch movie nights and comfort picks.</p>
+      </div>
+    </section>
+
+    <section class="panel content-section hidden" id="tvSection" style="margin-bottom:28px;">
+      <h2 style="margin-bottom:20px;">TV Shows</h2>
+      <section class="shows" id="tvShows"></section>
+    </section>
+
+    <section class="panel content-section hidden" id="movieSection" style="margin-bottom:28px;">
+      <h2 style="margin-bottom:20px;">Movies</h2>
+      <section class="shows" id="movieShows"></section>
+    </section>
 
     <section class="show-page" id="showPage">
     <div class="show-hero">
@@ -1409,7 +1499,7 @@
   </div>
 
   <script>
-    const shows = [
+    const tvShows = [
       {
         name: "Shooting Stars",
         description: "A cute K-drama to watch together 💕",
@@ -1433,13 +1523,30 @@
       }
     ];
 
+    const movies = [
+      {
+        name: "Animal",
+        description: "late night movie vibes together 🖤",
+        seasons: 1,
+        episodesPerSeason: { 1: 1 },
+        embedBase: "https://www.2embed.cc/embed/tt13751694",
+        isMovie: true
+      }
+    ];
+
     let selectedShow = null;
     let selectedSeason = null;
     let pendingMobileEpisode = null;
     let pendingMobileButton = null;
     let mobileWarningBypassed = false;
 
-    const showsEl = document.getElementById("shows");
+    const tvShowsEl = document.getElementById("tvShows");
+    const movieShowsEl = document.getElementById("movieShows");
+    const categoryMenu = document.getElementById("categoryMenu");
+    const tvCategoryBtn = document.getElementById("tvCategoryBtn");
+    const movieCategoryBtn = document.getElementById("movieCategoryBtn");
+    const tvSection = document.getElementById("tvSection");
+    const movieSection = document.getElementById("movieSection");
     
     const playerBox = document.getElementById("playerBox");
     const videoPlayer = document.getElementById("videoPlayer");
@@ -1536,18 +1643,75 @@
     ];
 
     function renderShows() {
-      showsEl.innerHTML = "";
-      shows.forEach((show, index) => {
+      tvShowsEl.innerHTML = "";
+      movieShowsEl.innerHTML = "";
+
+      tvShows.forEach((show, index) => {
         const card = document.createElement("div");
         card.className = "show-card";
         card.innerHTML = `<h2>${show.name}</h2><p>${show.description}</p>`;
-        card.onclick = () => selectShow(index, card);
-        showsEl.appendChild(card);
+        card.onclick = () => selectShow(index, card, "tv");
+        tvShowsEl.appendChild(card);
+      });
+
+      movies.forEach((movie, index) => {
+        const card = document.createElement("div");
+        card.className = "show-card";
+        card.innerHTML = `<h2>${movie.name}</h2><p>${movie.description}</p>`;
+        card.onclick = () => selectShow(index, card, "movie");
+        movieShowsEl.appendChild(card);
       });
     }
 
-    function selectShow(index, card) {
-      selectedShow = shows[index];
+    function runAfterPaint(callback) {
+      requestAnimationFrame(() => requestAnimationFrame(callback));
+    }
+
+    function openCategory(type) {
+      categoryMenu.classList.add("switching");
+
+      setTimeout(() => {
+        const targetSection = type === "tv" ? tvSection : movieSection;
+        const otherSection = type === "tv" ? movieSection : tvSection;
+
+        categoryMenu.classList.add("hidden");
+        categoryMenu.classList.remove("switching", "entering");
+        otherSection.classList.add("hidden");
+        otherSection.classList.remove("switching", "entering");
+        targetSection.classList.remove("hidden", "switching");
+
+        runAfterPaint(() => {
+          targetSection.classList.add("entering");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setTimeout(() => targetSection.classList.remove("entering"), 620);
+        });
+      }, 390);
+    }
+
+    function backToCategory() {
+      const activeSection = !tvSection.classList.contains("hidden") ? tvSection : (!movieSection.classList.contains("hidden") ? movieSection : null);
+
+      if (!activeSection) return false;
+
+      activeSection.classList.add("switching");
+
+      setTimeout(() => {
+        activeSection.classList.add("hidden");
+        activeSection.classList.remove("switching", "entering");
+        categoryMenu.classList.remove("hidden", "switching");
+
+        runAfterPaint(() => {
+          categoryMenu.classList.add("entering");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setTimeout(() => categoryMenu.classList.remove("entering"), 620);
+        });
+      }, 390);
+
+      return true;
+    }
+
+    function selectShow(index, card, type = "tv") {
+      selectedShow = type === "movie" ? movies[index] : tvShows[index];
       selectedSeason = 1;
       document.querySelectorAll(".show-card").forEach(c => c.classList.remove("active"));
       card.classList.add("active");
@@ -1568,21 +1732,33 @@
     function openShowPage() {
       showPageTitle.textContent = selectedShow.name;
       showPageDescription.textContent = selectedShow.description;
-      showEpisodeTitle.textContent = selectedShow.name + " — Episodes";
+      showEpisodeTitle.textContent = selectedShow.isMovie ? "Start Watching" : selectedShow.name + " — Episodes";
       showEpisodeButtons.innerHTML = "";
       videoPlayer.src = "";
       playerBox.style.display = "none";
 
-      const totalEpisodes = selectedShow.episodesPerSeason[1];
-      for (let episode = 1; episode <= totalEpisodes; episode++) {
-        const epBtn = document.createElement("button");
-        epBtn.textContent = "Episode " + episode;
-        epBtn.onclick = () => playEpisode(episode, epBtn);
-        showEpisodeButtons.appendChild(epBtn);
+      if (selectedShow.isMovie) {
+        const movieBtn = document.createElement("button");
+        movieBtn.textContent = "Play Movie";
+        movieBtn.onclick = () => playEpisode(1, movieBtn);
+        showEpisodeButtons.appendChild(movieBtn);
+      } else {
+        const totalEpisodes = selectedShow.episodesPerSeason[1];
+        for (let episode = 1; episode <= totalEpisodes; episode++) {
+          const epBtn = document.createElement("button");
+          epBtn.textContent = "Episode " + episode;
+          epBtn.onclick = () => playEpisode(episode, epBtn);
+          showEpisodeButtons.appendChild(epBtn);
+        }
       }
 
+      showPage.classList.remove("entering", "switching");
       showPage.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      runAfterPaint(() => {
+        showPage.classList.add("entering");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => showPage.classList.remove("entering"), 620);
+      });
     }
 
     function isPhoneDevice() {
@@ -1592,11 +1768,15 @@
     function startEpisode(episode, btn) {
       document.querySelectorAll("#showEpisodeButtons button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      const src = selectedShow.embedBase
-        .replaceAll("{season}", 1)
-        .replaceAll("{episode}", episode);
+      const src = selectedShow.isMovie
+        ? selectedShow.embedBase
+        : selectedShow.embedBase
+            .replaceAll("{season}", 1)
+            .replaceAll("{episode}", episode);
       videoPlayer.src = src;
-      nowPlaying.textContent = `${selectedShow.name} — Episode ${episode}`;
+      nowPlaying.textContent = selectedShow.isMovie
+        ? `${selectedShow.name} — Now Playing`
+        : `${selectedShow.name} — Episode ${episode}`;
       playerBox.style.display = "block";
       playerBox.scrollIntoView({ behavior: "smooth" });
     }
@@ -1881,11 +2061,20 @@
       createSparkles();
 
       if (showPage.classList.contains("active")) {
-        showPage.classList.remove("active");
-        mainPage.classList.remove("show-mode");
-        videoPlayer.src = "";
-        playerBox.style.display = "none";
-        mainPage.classList.add("active");
+        showPage.classList.add("switching");
+        setTimeout(() => {
+          showPage.classList.remove("active", "switching", "entering");
+          mainPage.classList.remove("show-mode");
+          videoPlayer.src = "";
+          playerBox.style.display = "none";
+          mainPage.classList.add("active");
+        }, 390);
+        return;
+      }
+
+      if (!categoryMenu.classList.contains("hidden")) {
+        // already on main category menu
+      } else if (backToCategory()) {
         return;
       }
 
@@ -1911,9 +2100,13 @@
       console.assert(!document.getElementById("introLatency"), "introLatency should not be required anymore");
       const testLatency = getRandomLatency();
       console.assert(testLatency >= 8 && testLatency <= 45, "latency should stay between 8ms and 45ms");
-      console.assert(shows.length >= 3, "at least three shows should be present");
+      console.assert(tvShows.length >= 3, "at least three tv shows should be present");
+      console.assert(movies.length >= 1, "at least one movie should be present");
       console.assert(showPage && showEpisodeButtons, "show page and episode buttons should exist");
     }
+
+    tvCategoryBtn.onclick = () => openCategory("tv");
+    movieCategoryBtn.onclick = () => openCategory("movie");
 
     renderShows();
     // basic popup/ad protection outside the video iframe
