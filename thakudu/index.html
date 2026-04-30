@@ -483,6 +483,17 @@
       will-change: opacity, transform, filter;
     }
 
+    .content-section.pre-enter,
+    .category-menu.pre-enter,
+    .show-page.pre-enter,
+    .container.pre-enter,
+    .screen.pre-enter {
+      opacity: 0;
+      transform: translateY(22px) scale(.97);
+      filter: blur(10px);
+      pointer-events: none;
+    }
+
     .content-section.entering,
     .category-menu.entering,
     .show-page.entering {
@@ -506,7 +517,6 @@
       margin: 0 auto;
       padding: 72px 28px 40px;
       display: none;
-      animation: pageFade 0.8s ease both;
     }
 
     .show-page.active { display: block; }
@@ -634,7 +644,6 @@
         0 18px 40px rgba(0,0,0,0.16);
       border: 1px solid rgba(255,255,255,0.12);
       margin-bottom: 22px;
-      animation: slideUp 0.45s ease both;
     }
 
     .panel h2 {
@@ -1668,6 +1677,7 @@
     }
 
     function openCategory(type) {
+      categoryMenu.classList.remove("entering", "pre-enter");
       categoryMenu.classList.add("switching");
 
       setTimeout(() => {
@@ -1675,14 +1685,17 @@
         const otherSection = type === "tv" ? movieSection : tvSection;
 
         categoryMenu.classList.add("hidden");
-        categoryMenu.classList.remove("switching", "entering");
+        categoryMenu.classList.remove("switching", "entering", "pre-enter");
         otherSection.classList.add("hidden");
-        otherSection.classList.remove("switching", "entering");
-        targetSection.classList.remove("hidden", "switching");
+        otherSection.classList.remove("switching", "entering", "pre-enter");
 
-        runAfterPaint(() => {
+        targetSection.classList.remove("hidden", "switching", "entering");
+        targetSection.classList.add("pre-enter");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        requestAnimationFrame(() => {
+          targetSection.classList.remove("pre-enter");
           targetSection.classList.add("entering");
-          window.scrollTo({ top: 0, behavior: "smooth" });
           setTimeout(() => targetSection.classList.remove("entering"), 620);
         });
       }, 390);
@@ -1693,16 +1706,20 @@
 
       if (!activeSection) return false;
 
+      activeSection.classList.remove("entering", "pre-enter");
       activeSection.classList.add("switching");
 
       setTimeout(() => {
         activeSection.classList.add("hidden");
-        activeSection.classList.remove("switching", "entering");
-        categoryMenu.classList.remove("hidden", "switching");
+        activeSection.classList.remove("switching", "entering", "pre-enter");
 
-        runAfterPaint(() => {
+        categoryMenu.classList.remove("hidden", "switching", "entering");
+        categoryMenu.classList.add("pre-enter");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        requestAnimationFrame(() => {
+          categoryMenu.classList.remove("pre-enter");
           categoryMenu.classList.add("entering");
-          window.scrollTo({ top: 0, behavior: "smooth" });
           setTimeout(() => categoryMenu.classList.remove("entering"), 620);
         });
       }, 390);
@@ -1753,10 +1770,12 @@
       }
 
       showPage.classList.remove("entering", "switching");
-      showPage.classList.add("active");
-      runAfterPaint(() => {
+      showPage.classList.add("active", "pre-enter");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      requestAnimationFrame(() => {
+        showPage.classList.remove("pre-enter");
         showPage.classList.add("entering");
-        window.scrollTo({ top: 0, behavior: "smooth" });
         setTimeout(() => showPage.classList.remove("entering"), 620);
       });
     }
@@ -1968,7 +1987,12 @@
       setTimeout(() => {
         journeyOverlay.classList.remove("show");
         heartRain.innerHTML = "";
-        mainPage.classList.add("active");
+        mainPage.classList.add("active", "pre-enter");
+        requestAnimationFrame(() => {
+          mainPage.classList.remove("pre-enter");
+          mainPage.classList.add("entering");
+          setTimeout(() => mainPage.classList.remove("entering"), 620);
+        });
         backBtn.classList.remove("hidden");
       }, 5600);
     };
