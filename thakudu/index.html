@@ -184,10 +184,18 @@
       display: none;
       align-items: center;
       justify-content: center;
-      animation: pageFade 0.8s ease both;
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(.985);
+      filter: blur(12px);
+      will-change: opacity, transform, filter;
     }
 
-    .screen.active { display: flex; }
+    .screen.active {
+      display: flex;
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
 
     .screen.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
     .screen.exiting { animation: sectionOut .38s ease both; }
@@ -430,11 +438,19 @@
       max-width: 1320px;
       margin: 0 auto;
       padding: 72px 28px 40px;
-      animation: pageFade 0.8s ease both;
       display: none;
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(.985);
+      filter: blur(12px);
+      will-change: opacity, transform, filter;
     }
 
-    .container.active { display: block; }
+    .container.active {
+      display: block;
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
 
     .container.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
     .container.exiting { animation: sectionOut .38s ease both; }
@@ -517,9 +533,18 @@
       margin: 0 auto;
       padding: 72px 28px 40px;
       display: none;
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(.985);
+      filter: blur(12px);
+      will-change: opacity, transform, filter;
     }
 
-    .show-page.active { display: block; }
+    .show-page.active {
+      display: block;
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+      filter: blur(0);
+    }
     .show-page.entering { animation: sectionIn .55s cubic-bezier(.2,.8,.2,1) both; }
     .show-page.exiting { animation: sectionOut .38s ease both; }
 
@@ -1232,8 +1257,35 @@
 
     @keyframes popIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     @keyframes pageFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes sectionIn { from { opacity: 0; transform: translateY(22px) scale(.97); filter: blur(10px); } to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
-    @keyframes sectionOut { from { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateY(-18px) scale(.97); filter: blur(10px); } }
+    @keyframes sectionIn {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 26px, 0) scale(.985);
+        filter: blur(14px);
+      }
+      60% {
+        opacity: 1;
+        transform: translate3d(0, -2px, 0) scale(1.002);
+        filter: blur(0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        filter: blur(0);
+      }
+    }
+    @keyframes sectionOut {
+      from {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        filter: blur(0);
+      }
+      to {
+        opacity: 0;
+        transform: translate3d(0, -18px, 0) scale(.985);
+        filter: blur(12px);
+      }
+    }
     @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes netflixPop { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
@@ -1673,32 +1725,46 @@
     }
 
     function runAfterPaint(callback) {
-      requestAnimationFrame(() => requestAnimationFrame(callback));
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          callback();
+        });
+      });
+    }
+
+    function smoothSwitch(fromEl, toEl, callback) {
+      if (fromEl) {
+        fromEl.classList.remove("entering", "pre-enter");
+        fromEl.classList.add("switching");
+      }
+
+      setTimeout(() => {
+        if (fromEl) {
+          fromEl.classList.add("hidden");
+          fromEl.classList.remove("switching", "active");
+        }
+
+        toEl.classList.remove("hidden");
+        toEl.classList.add("pre-enter");
+
+        runAfterPaint(() => {
+          toEl.classList.remove("pre-enter");
+          toEl.classList.add("entering", "active");
+
+          setTimeout(() => {
+            toEl.classList.remove("entering");
+          }, 700);
+
+          if (callback) callback();
+        });
+      }, 320);
     }
 
     function openCategory(type) {
-      categoryMenu.classList.remove("entering", "pre-enter");
-      categoryMenu.classList.add("switching");
-
-      setTimeout(() => {
-        const targetSection = type === "tv" ? tvSection : movieSection;
-        const otherSection = type === "tv" ? movieSection : tvSection;
-
-        categoryMenu.classList.add("hidden");
-        categoryMenu.classList.remove("switching", "entering", "pre-enter");
-        otherSection.classList.add("hidden");
-        otherSection.classList.remove("switching", "entering", "pre-enter");
-
-        targetSection.classList.remove("hidden", "switching", "entering");
-        targetSection.classList.add("pre-enter");
+      const targetSection = type === "tv" ? tvSection : movieSection;
+      smoothSwitch(categoryMenu, targetSection, () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-
-        requestAnimationFrame(() => {
-          targetSection.classList.remove("pre-enter");
-          targetSection.classList.add("entering");
-          setTimeout(() => targetSection.classList.remove("entering"), 620);
-        });
-      }, 390);
+      });
     }
 
     function backToCategory() {
@@ -1706,23 +1772,9 @@
 
       if (!activeSection) return false;
 
-      activeSection.classList.remove("entering", "pre-enter");
-      activeSection.classList.add("switching");
-
-      setTimeout(() => {
-        activeSection.classList.add("hidden");
-        activeSection.classList.remove("switching", "entering", "pre-enter");
-
-        categoryMenu.classList.remove("hidden", "switching", "entering");
-        categoryMenu.classList.add("pre-enter");
+      smoothSwitch(activeSection, categoryMenu, () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-
-        requestAnimationFrame(() => {
-          categoryMenu.classList.remove("pre-enter");
-          categoryMenu.classList.add("entering");
-          setTimeout(() => categoryMenu.classList.remove("entering"), 620);
-        });
-      }, 390);
+      });
 
       return true;
     }
@@ -1769,14 +1821,17 @@
         }
       }
 
-      showPage.classList.remove("entering", "switching");
-      showPage.classList.add("active", "pre-enter");
+      showPage.classList.remove("hidden");
+      showPage.classList.add("pre-enter");
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      requestAnimationFrame(() => {
+      runAfterPaint(() => {
         showPage.classList.remove("pre-enter");
-        showPage.classList.add("entering");
-        setTimeout(() => showPage.classList.remove("entering"), 620);
+        showPage.classList.add("active", "entering");
+
+        setTimeout(() => {
+          showPage.classList.remove("entering");
+        }, 700);
       });
     }
 
@@ -1902,7 +1957,12 @@
 
     goUsersBtn.onclick = () => {
       introScreen.classList.add("hide");
-      userScreen.classList.add("active");
+      userScreen.classList.add("active", "pre-enter");
+      runAfterPaint(() => {
+        userScreen.classList.remove("pre-enter");
+        userScreen.classList.add("entering");
+        setTimeout(() => userScreen.classList.remove("entering"), 620);
+      });
       backBtn.classList.remove("hidden");
     };
 
@@ -2085,14 +2145,17 @@
       createSparkles();
 
       if (showPage.classList.contains("active")) {
+        showPage.classList.remove("entering");
         showPage.classList.add("switching");
+
         setTimeout(() => {
-          showPage.classList.remove("active", "switching", "entering");
+          showPage.classList.remove("active", "switching");
+          showPage.classList.add("hidden");
           mainPage.classList.remove("show-mode");
           videoPlayer.src = "";
           playerBox.style.display = "none";
-          mainPage.classList.add("active");
-        }, 390);
+        }, 320);
+
         return;
       }
 
@@ -2103,8 +2166,13 @@
       }
 
       if (mainPage.classList.contains("active")) {
-        mainPage.classList.remove("active");
-        userScreen.classList.add("active");
+        mainPage.classList.remove("active", "entering", "pre-enter");
+        userScreen.classList.add("active", "pre-enter");
+        runAfterPaint(() => {
+          userScreen.classList.remove("pre-enter");
+          userScreen.classList.add("entering");
+          setTimeout(() => userScreen.classList.remove("entering"), 620);
+        });
         return;
       }
 
