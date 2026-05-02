@@ -1,1 +1,1320 @@
-welcome
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adarsh | Portfolio Journey</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.62);
+      --glass: rgba(255, 255, 255, 0.105);
+      --border: rgba(255, 255, 255, 0.18);
+      --warm: rgba(255, 191, 122, 0.72);
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: white;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #4a4f52, #303438 48%, #1d1f22);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      transform: scale(.985) translateY(18px);
+      transition: opacity .65s ease, transform .65s cubic-bezier(.2,.8,.2,1), visibility .65s ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+    }
+
+    .watch-card {
+      width: min(520px, calc(100% - 32px));
+      min-height: 500px;
+      padding: 38px;
+      border-radius: 34px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.25), 0 40px 90px rgba(0,0,0,0.32);
+      backdrop-filter: blur(24px) saturate(140%);
+      position: relative;
+      z-index: 5;
+    }
+
+    .watch-card h2 {
+      font-size: 22px;
+      color: rgba(255,255,255,.82);
+      margin-bottom: 20px;
+    }
+
+    .profile-tap {
+      position: relative;
+      z-index: 3;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      width: auto;
+      padding: 0;
+      backdrop-filter: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .profile-tap:hover {
+      transform: translateY(-4px) scale(1.015);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .avatar-ring {
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid rgba(255, 207, 122, .8);
+      box-shadow: 0 18px 48px rgba(0,0,0,.28), 0 0 42px rgba(255,207,122,.18);
+      background: rgba(255,255,255,.05);
+      isolation: isolate;
+    }
+
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+    }
+
+    .profile-tap h1 {
+      font-size: 32px;
+      margin: 6px 0 0;
+      letter-spacing: -.8px;
+    }
+
+    .profile-tap p {
+      color: rgba(255,255,255,.55);
+      font-size: 17px;
+    }
+
+    .profile-emojis {
+      display: flex;
+      gap: 18px;
+      margin-top: 18px;
+      justify-content: center;
+    }
+
+    .big-emoji {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .emoji-burst {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2000;
+    }
+
+    .burst-emoji {
+      position: fixed;
+      width: 42px;
+      height: 42px;
+      left: 50%;
+      top: 50%;
+      opacity: 0;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.28));
+      animation: emojiFly 1.8s ease-out forwards;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes emojiFly {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.55) rotate(0deg);
+      }
+
+      14% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(.9) rotate(0deg);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.18) rotate(var(--r));
+      }
+    }
+
+    .glass-panel {
+      width: min(980px, 100%);
+      min-height: 580px;
+      padding: 38px;
+      border-radius: 42px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(255,255,255,0.13), rgba(255,255,255,0.045));
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.32), 0 40px 100px rgba(0,0,0,0.42);
+      backdrop-filter: blur(24px) saturate(140%);
+      transform: translateY(18px) scale(.985);
+      transition: transform .75s cubic-bezier(.2,.8,.2,1), box-shadow .75s ease;
+    }
+
+    .page.active .glass-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .top-badge {
+      position: relative;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      margin-bottom: 80px;
+      color: rgba(255,255,255,.78);
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.045));
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    button {
+      border: 1px solid rgba(255,255,255,0.22);
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.055));
+      color: var(--text);
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.35), 0 14px 28px rgba(0,0,0,0.22);
+      backdrop-filter: blur(18px) saturate(135%);
+      cursor: pointer;
+      transition: transform .32s cubic-bezier(.2,.8,.2,1), opacity .25s ease, box-shadow .32s ease, background .32s ease;
+      font-family: inherit;
+    }
+
+    button:hover { transform: translateY(-2px); }
+
+    .profile-tap:hover {
+      transform: translateY(-4px) scale(1.015);
+      background: transparent;
+      box-shadow: none;
+    }
+    button:active { transform: scale(.97); }
+
+    .hero {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      color: rgba(255,255,255,0.62);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(44px, 8vw, 92px);
+      line-height: 0.9;
+      letter-spacing: -4px;
+      margin-bottom: 22px;
+    }
+
+    .shine {
+      background: linear-gradient(90deg, #fff, #d7dcde, #fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 34px;
+    }
+
+    .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .main-btn {
+      padding: 15px 24px;
+      border-radius: 999px;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      animation: buttonIn .75s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .main-btn:nth-child(1) { animation-delay: .12s; }
+    .main-btn:nth-child(2) { animation-delay: .2s; }
+    .main-btn:nth-child(3) { animation-delay: .28s; }
+    .main-btn:nth-child(4) { animation-delay: .36s; }
+
+    @keyframes buttonIn {
+      from { opacity: 0; transform: translateY(14px) scale(.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .emoji-icon {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .small-emoji {
+      width: clamp(28px, 4vw, 46px);
+      height: clamp(28px, 4vw, 46px);
+      vertical-align: middle;
+      transform: translateY(2px);
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .journey-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: block;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, #494139, #34312d 55%, #1f2020);
+      transition: opacity .65s ease;
+    }
+
+    .journey-inner {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 620px;
+    }
+
+    .journey-overlay.active { opacity: 1; pointer-events: auto; }
+
+    canvas, .road-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas { z-index: 1; }
+
+    .road-svg {
+      z-index: 2;
+      opacity: 0;
+      transition: opacity .8s ease;
+    }
+
+    .road-svg.show { opacity: 1; }
+
+    .road-base {
+      fill: none;
+      stroke: rgba(255,255,255,0.13);
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 8 18;
+    }
+
+    .road-glow {
+      fill: none;
+      stroke: var(--warm);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 5px rgba(255,170,80,0.34));
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .fire-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 8;
+      opacity: 0;
+      background: #ffd8a2;
+      box-shadow: 0 0 10px rgba(255,225,180,.72), 0 0 20px rgba(255,180,90,.44);
+      transform: translate(-50%, -50%);
+      transition: opacity .4s ease;
+    }
+
+    .journey-title {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      font-size: clamp(28px, 5vw, 52px);
+      letter-spacing: -2px;
+      color: rgba(255,255,255,.88);
+      opacity: 0;
+      transition: opacity .7s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .journey-title.show { opacity: 1; }
+
+    .journey-subtitle {
+      position: fixed;
+      top: 108px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      width: min(620px, calc(100vw - 40px));
+      text-align: center;
+      color: rgba(255,255,255,.56);
+      font-size: 15px;
+      line-height: 1.7;
+      opacity: 0;
+      transition: opacity .7s ease;
+    }
+
+    .journey-subtitle.show {
+      opacity: 1;
+    }
+
+    .milestones {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    .milestone {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(.7);
+      opacity: 0;
+      pointer-events: auto;
+      background: #ffd9a4;
+      border: 1px solid rgba(255,255,255,.52);
+      box-shadow: 0 0 12px rgba(255,225,185,.55), 0 0 22px rgba(255,176,90,.36);
+      transition: opacity .6s ease, transform .6s ease, box-shadow .25s ease;
+    }
+
+    .milestone.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    .milestone:hover { transform: translate(-50%, -50%) scale(1.16); }
+
+    .chapter-card {
+      position: absolute;
+      width: var(--card-width, 210px);
+      padding: 14px 15px;
+      border-radius: 21px;
+      z-index: 7;
+      opacity: 0;
+      transform: translateY(14px) scale(.96);
+      pointer-events: none;
+      background: linear-gradient(145deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid var(--border);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.23), 0 16px 42px rgba(0,0,0,.24);
+      backdrop-filter: blur(18px) saturate(130%);
+      transition: opacity .55s ease, transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+    }
+
+    .chapter-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      z-index: 30;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.24), 0 24px 70px rgba(0,0,0,.36);
+    }
+
+    .chapter-card h3 { font-size: 14px; color: rgba(255,226,188,.9); margin-bottom: 6px; }
+    .chapter-card h2 { font-size: 16px; letter-spacing: -.5px; margin-bottom: 6px; line-height: 1.3; }
+    .chapter-card p { color: rgba(255,255,255,.64); font-size: 12px; line-height: 1.45; }
+
+    .hint {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 9;
+      color: rgba(255,255,255,.58);
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+
+    .mobile-journey-list {
+      display: none;
+    }
+
+    .hint.show { opacity: 1; }
+
+    .close-btn {
+      position: fixed;
+      z-index: 999;
+      top: 18px;
+      left: 18px;
+      min-width: 142px;
+      height: 58px;
+      padding: 0 24px;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      color: rgba(255,255,255,.96);
+      opacity: 0;
+      pointer-events: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04)),
+        linear-gradient(135deg, rgba(130,160,185,.34), rgba(55,75,92,.28));
+      border: 1px solid rgba(220,235,245,.22);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.26),
+        inset 0 -10px 22px rgba(0,0,0,.18),
+        0 10px 30px rgba(0,0,0,.24);
+      backdrop-filter: blur(22px) saturate(140%);
+      transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .3s ease, box-shadow .35s ease;
+    }
+
+    .close-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.28),
+        inset 0 -10px 22px rgba(0,0,0,.18),
+        0 16px 36px rgba(0,0,0,.28);
+    }
+
+    .close-btn:active {
+      transform: scale(.97);
+    }
+
+    .page-back {
+      top: 22px;
+      left: 22px;
+    }
+
+    .close-btn.show { opacity: 1; pointer-events: auto; }
+
+    .floating-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .5s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(18,18,18,.35);
+    }
+
+    .floating-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .panel-card {
+      width: min(760px, calc(100% - 32px));
+      padding: 30px;
+      border-radius: 34px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.24), 0 30px 80px rgba(0,0,0,.34);
+      backdrop-filter: blur(22px);
+      transform: translateY(18px) scale(.96);
+      transition: transform .55s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .floating-panel.active .panel-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .panel-title {
+      font-size: clamp(30px, 5vw, 52px);
+      margin-bottom: 22px;
+      letter-spacing: -2px;
+    }
+
+    .academic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .academic-item, .link-item {
+      text-decoration: none;
+      color: white;
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .academic-item h3, .link-item h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity .25s ease;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .academic-item p, .link-item p {
+      transition: opacity .25s ease;
+      color: rgba(255,255,255,.64);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .link-item {
+      transition: transform .32s cubic-bezier(.2,.8,.2,1), background .32s ease, border-color .32s ease;
+    }
+
+    .link-item:hover {
+      transform: translateY(-4px) scale(1.015);
+      background: rgba(255,255,255,.1);
+      border-color: rgba(255,255,255,.2);
+    }
+
+    .academic-item {
+      transition: transform .32s cubic-bezier(.2,.8,.2,1), background .32s ease;
+    }
+
+    .academic-item:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.09);
+    }
+
+    .support-panel {
+      width: min(1120px, calc(100% - 120px));
+      min-height: min(820px, calc(100vh - 90px));
+      padding: 38px;
+    }
+
+    .support-panel .top-badge {
+      margin-bottom: 42px;
+    }
+
+    .support-layout {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(260px, .75fr) minmax(420px, 1.25fr);
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .support-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 520px;
+      padding: 8px 0;
+    }
+
+    .support-note {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border-radius: 26px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      color: rgba(255,255,255,.72);
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      line-height: 1.55;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.12);
+    }
+
+    .support-box {
+      width: 100%;
+      padding: 18px;
+      border-radius: 38px;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,255,255,.2), transparent 34%),
+        radial-gradient(circle at 95% 10%, rgba(255,191,122,.13), transparent 30%),
+        linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,.3),
+        inset 0 -14px 28px rgba(0,0,0,.10),
+        0 28px 78px rgba(0,0,0,.30);
+      backdrop-filter: blur(24px) saturate(145%);
+      overflow: hidden;
+    }
+
+    .support-box h3 {
+      font-size: 22px;
+      letter-spacing: -.4px;
+      margin-bottom: 8px;
+    }
+
+    .support-box p {
+      color: rgba(255,255,255,.65);
+      margin: 0 0 16px;
+      line-height: 1.6;
+    }
+
+    .kofi-frame-wrap {
+      border-radius: 30px;
+      padding: 10px;
+      background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.2), 0 18px 46px rgba(0,0,0,.22);
+      overflow: hidden;
+      min-height: 520px;
+      position: relative;
+    }
+
+    .kofi-frame-wrap iframe {
+      display: block;
+      width: 100%;
+      height: min(66vh, 640px);
+      min-height: 520px;
+      border: 0;
+      border-radius: 24px;
+      background: #f9f9f9;
+    }
+
+    .kofi-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 999px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,.18);
+    }
+
+    @media (max-width: 900px) {
+      .support-panel {
+        width: min(980px, calc(100% - 34px));
+        max-height: calc(100vh - 90px);
+        overflow-y: auto;
+      }
+
+      .support-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .support-copy {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .page { padding: 72px 18px 24px; }
+      .glass-panel { padding: 24px; border-radius: 32px; min-height: 560px; }
+      .support-panel { width: calc(100% - 24px); padding: 22px; }
+      .kofi-frame-wrap { min-height: 460px; }
+      .kofi-frame-wrap iframe { min-height: 460px; height: 620px; }
+      .top-badge { margin-bottom: 56px; }
+      h1 { letter-spacing: -2px; }
+      .hint { left: 24px; right: auto; }
+      .journey-title { top: 82px; }
+      .close-btn { top: 16px; left: 16px; }
+      .page-back { top: 14px; left: 14px; }
+
+      .journey-overlay {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .journey-inner {
+        display: none;
+      }
+
+      .mobile-journey-list {
+        display: grid;
+        gap: 18px;
+        padding: 150px 18px 70px;
+        position: relative;
+        z-index: 7;
+      }
+
+      .mobile-journey-list::before {
+        content: "";
+        position: absolute;
+        top: 150px;
+        bottom: 70px;
+        left: 28px;
+        width: 2px;
+        background: rgba(255, 191, 122, 0.45);
+        box-shadow: 0 0 14px rgba(255, 191, 122, 0.32);
+      }
+
+      .mobile-chapter-card {
+        margin-left: 34px;
+        width: calc(100% - 34px);
+        opacity: 0;
+        transform: translateY(14px) scale(.97);
+      }
+
+      .mobile-chapter-card.show {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .mobile-dot {
+        position: absolute;
+        left: 22px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #ffd9a4;
+        border: 1px solid rgba(255,255,255,.52);
+        box-shadow: 0 0 12px rgba(255,225,185,.55), 0 0 22px rgba(255,176,90,.36);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page active" id="profilePage">
+    <section class="watch-card">
+      <h2>Welcome to my portfolio</h2>
+      <button class="profile-tap" id="profileTap" type="button" onclick="enterPortfolio()">
+        <div class="avatar-ring" onclick="enterPortfolio()">
+          <img src="https://avatars.githubusercontent.com/u/87631878?v=4" alt="Adarsh Profile Picture">
+        </div>
+        <h1>Adarsh</h1>
+        <p>tap to enter</p>
+        <div class="profile-emojis">
+          <img class="big-emoji" src="https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png" alt="">
+          <img class="big-emoji" src="https://em-content.zobj.net/source/apple/453/face-blowing-a-kiss_1f618.png" alt="">
+          <img class="big-emoji" src="https://em-content.zobj.net/source/apple/453/star-struck_1f929.png" alt="">
+        </div>
+      </button>
+    </section>
+    <div class="emoji-burst" id="emojiBurst"></div>
+  </main>
+
+  <main class="page" id="homePage">
+    <section class="glass-panel">
+      <div class="top-badge"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/mobile-phone_1f4f1.png" alt=""> Portfolio</div>
+      <div class="hero">
+        <div class="eyebrow">Portfolio / Personal Website</div>
+        <h1>Hey, I’m <span class="shine">Adarsh</span>.</h1>
+        <p class="subtitle">A student, designer and tech enthusiast building visuals, websites and ideas that feel clean, useful and personal.</p>
+        <div class="actions">
+          <button class="main-btn" id="journeyBtn" type="button"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/ringed-planet_1fa90.png" alt=""> My Journey</button>
+          <button class="main-btn" id="academicsBtn" type="button"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/graduation-cap_1f393.png" alt=""> Qualifications</button>
+          <button class="main-btn" id="linksBtn" type="button"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/link_1f517.png" alt=""> My Links</button>
+          <button class="main-btn" id="supportBtn" type="button"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/hot-beverage_2615.png" alt=""> Support Me</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="journey-overlay" id="journeyOverlay">
+    <div class="journey-inner" id="journeyInner">
+      <canvas id="fireworkCanvas"></canvas>
+      <svg class="road-svg" id="roadSvg" viewBox="0 0 1000 620" preserveAspectRatio="none">
+        <path class="road-base" d="M65 525 C145 360 230 265 330 330 S455 545 555 395 S680 130 800 260 S885 445 940 135" />
+        <path class="road-glow" id="roadGlow" pathLength="1" d="M65 525 C145 360 230 265 330 330 S455 545 555 395 S680 130 800 260 S885 445 940 135" />
+      </svg>
+      <div class="milestones" id="milestones"></div>
+      <div id="chapterCards"></div>
+    </div>
+
+    <button class="close-btn" id="closeBtn" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L8 12L15 19" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <h2 class="journey-title" id="journeyTitle">My Journey <img class="emoji-icon small-emoji" src="https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png" alt=""></h2>
+    <p class="journey-subtitle" id="journeySubtitle">A small timeline of how curiosity slowly turned into creativity, technology and ideas I genuinely care about.</p>
+    <div class="fire-dot" id="fireDot"></div>
+    <div class="mobile-journey-list" id="mobileJourneyList"></div>
+    <div class="hint" id="hint"><img class="emoji-icon small-emoji" src="https://em-content.zobj.net/source/apple/453/smiling-face-with-hearts_1f970.png" alt=""> Hover or tap the dots</div>
+  </section>
+
+  <main class="page" id="academicsPage">
+    <button class="close-btn show page-back" data-page="homePage" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L8 12L15 19" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <section class="glass-panel">
+      <div class="top-badge"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/graduation-cap_1f393.png" alt=""> Qualifications</div>
+      <div class="hero">
+        <h1><span class="shine">Academics</span></h1>
+        <p class="subtitle">My educational journey, goals and technical interests.</p>
+        <div class="academic-grid">
+          <div class="academic-item">
+            <h3>🏫 School</h3>
+            <p>Silver Hills Public School<br>CBSE • Class 12</p>
+          </div>
+          <div class="academic-item">
+            <h3>📚 Focus</h3>
+            <p>Computer Science, JEE & creative technology.</p>
+          </div>
+          <div class="academic-item">
+            <h3>🧠 Skills</h3>
+            <p>Python, design, printing, editing & web concepts.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main class="page" id="linksPage">
+    <button class="close-btn show page-back" data-page="homePage" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L8 12L15 19" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <section class="glass-panel">
+      <div class="top-badge"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/link_1f517.png" alt=""> My Links</div>
+      <div class="hero">
+        <h1><span class="shine">Connect</span></h1>
+        <p class="subtitle">All my important links and socials in one place.</p>
+        <div class="academic-grid">
+          <a class="link-item" href="https://in.pinterest.com/xmyoard/" target="_blank">
+            <h3><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/pushpin_1f4cc.png" alt=""> Pinterest</h3>
+            <p>@xmyoard</p>
+          </a>
+
+          <a class="link-item" href="http://github.com/xmyoard/" target="_blank">
+            <h3><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/laptop_1f4bb.png" alt=""> GitHub</h3>
+            <p>@xmyoard</p>
+          </a>
+
+          <a class="link-item" href="https://www.linkedin.com/in/xmyoard/" target="_blank">
+            <h3><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/briefcase_1f4bc.png" alt=""> LinkedIn</h3>
+            <p>/in/xmyoard</p>
+          </a>
+
+          <a class="link-item" href="https://open.spotify.com/user/p8jyiwtjrib3dfmibo5ygeaqq" target="_blank">
+            <h3><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/headphone_1f3a7.png" alt=""> Spotify</h3>
+            <p>@xmyoard</p>
+          </a>
+
+          <a class="link-item" href="https://discord.gg/Wf2QY9YHV7" target="_blank">
+            <h3><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/speech-balloon_1f4ac.png" alt=""> Discord</h3>
+            <p>Join Server</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <main class="page" id="supportPage">
+    <button class="close-btn show page-back" data-page="homePage" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L8 12L15 19" stroke="white" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+    <section class="glass-panel support-panel">
+      <div class="top-badge"><img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/hot-beverage_2615.png" alt=""> Support Me</div>
+
+      <div class="support-layout">
+        <div class="support-copy">
+          <h1><span class="shine">Support</span></h1>
+          <p class="subtitle">If you enjoy my work and projects, you can support me here.</p>
+          <div class="support-note">
+            <img class="emoji-icon" src="https://em-content.zobj.net/source/apple/453/sparkles_2728.png" alt="">
+            <span>Helps me keep building websites, designs, tools and creative ideas.</span>
+          </div>
+        </div>
+
+        <div class="support-box">
+          <h3>Support my creative work</h3>
+          <p>Every bit of support helps me continue making better projects and digital experiences 💗</p>
+          <div class="kofi-frame-wrap">
+            <iframe id="kofiframe" src="https://ko-fi.com/xmyo32/?hidefeed=true&widget=true&embed=true&preview=true" title="xmyo32"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const profilePage = document.getElementById("profilePage");
+    const profileTap = document.getElementById("profileTap");
+    const emojiBurst = document.getElementById("emojiBurst");
+
+    const homePage = document.getElementById("homePage");
+    const academicsPage = document.getElementById("academicsPage");
+    const linksPage = document.getElementById("linksPage");
+    const supportPage = document.getElementById("supportPage");
+
+    const journeyBtn = document.getElementById("journeyBtn");
+    const academicsBtn = document.getElementById("academicsBtn");
+    const linksBtn = document.getElementById("linksBtn");
+    const supportBtn = document.getElementById("supportBtn");
+
+    const overlay = document.getElementById("journeyOverlay");
+    const journeyTitle = document.getElementById("journeyTitle");
+    const journeySubtitle = document.getElementById("journeySubtitle");
+    const milestonesWrap = document.getElementById("milestones");
+    const chapterCards = document.getElementById("chapterCards");
+    const mobileJourneyList = document.getElementById("mobileJourneyList");
+    const hint = document.getElementById("hint");
+    const closeBtn = document.getElementById("closeBtn");
+    const canvas = document.getElementById("fireworkCanvas");
+    const ctx = canvas.getContext("2d");
+    const fireDot = document.getElementById("fireDot");
+    const journeyInner = document.getElementById("journeyInner");
+    const roadSvg = document.getElementById("roadSvg");
+    const roadGlow = document.getElementById("roadGlow");
+
+    let particles = [];
+    let animationFrame = null;
+    let journeyAnim = null;
+    let running = false;
+    let lastRevealedChapter = -1;
+
+    const chapters = [
+      { t: 0.035, year: "2021", title: "First Creative Spark", text: "Started exploring edits, visuals, typography and aesthetic design styles online.", side: "below" },
+      { t: 0.095, year: "2022", title: "Photo & Printing Work", text: "Started running photo printing and normal printing work while learning design flow and client interaction.", side: "above" },
+      { t: 0.16, year: "2022", title: "Poster & Visual Designs", text: "Created posters, social edits, aesthetic visuals and branding concepts for fun and practice.", side: "below" },
+      { t: 0.225, year: "2022", title: "Pinterest & Aesthetic Inspiration", text: "Started collecting aesthetic inspirations, layouts and visual ideas through Pinterest and creative communities.", side: "above" },
+      { t: 0.29, year: "2023", title: "Website Experiments", text: "Started experimenting with HTML, smooth UI ideas and interactive website concepts.", side: "below" },
+      { t: 0.355, year: "2023", title: "Python & CS", text: "Got deeper into Python, computer science concepts and coding projects while studying CBSE CS.", side: "above" },
+      { t: 0.42, year: "2023", title: "Online Revenue Journey", text: "Started making small online earnings through tasks, side hustles and internet based opportunities.", side: "below" },
+      { t: 0.485, year: "2023", title: "Aesthetic UI Direction", text: "Focused on cozy glassmorphism, smooth transitions and premium looking web experiences.", side: "above" },
+      { t: 0.55, year: "2024", title: "Graduated 10th Grade", text: "Completed Class 10 CBSE and moved toward a stronger tech and creative focused path.", side: "below" },
+      { t: 0.615, year: "2024", title: "Hosting & Server Side", text: "Explored server management, hosting panels and digital infrastructure related projects.", side: "above" },
+      { t: 0.68, year: "2024", title: "Photography & Visuals", text: "Started taking photos, experimenting with framing, aesthetics and visual storytelling.", side: "below" },
+      { t: 0.745, year: "2025", title: "Portfolio Identity", text: "Started building personal portfolio experiences that feel smooth, cinematic and unique.", side: "above" },
+      { t: 0.81, year: "2025", title: "CSE & Future Goals", text: "Focused on Computer Science, JEE prep, UI ideas and building skills for the future.", side: "below" },
+      { t: 0.875, year: "2025", title: "Learning Guitar", text: "Started learning guitar and exploring music more deeply alongside creative and technical work.", side: "above" },
+      { t: 0.935, year: "2026", title: "Graduating 12th Grade", text: "Finishing Class 12 CBSE while preparing for bigger projects, university life and future opportunities.", side: "below" },
+      { t: 0.985, year: "Future", title: "Building Something Bigger", text: "Aiming toward CSE, creative technology, international opportunities and meaningful digital work.", side: "above" }
+    ];
+
+    function switchPage(targetPage) {
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      setTimeout(() => targetPage.classList.add("active"), 120);
+    }
+
+    function playEmojiBurst() {
+      const emojiSources = [
+        "https://em-content.zobj.net/source/apple/453/heart-hands_light-skin-tone_1faf6-1f3fb_1f3fb.png",
+        "https://em-content.zobj.net/source/apple/453/face-blowing-a-kiss_1f618.png",
+        "https://em-content.zobj.net/source/apple/453/star-struck_1f929.png"
+      ];
+
+      for (let i = 0; i < 18; i++) {
+        const img = document.createElement("img");
+        img.className = "burst-emoji";
+        img.src = emojiSources[i % emojiSources.length];
+        img.style.setProperty("--x", `${(Math.random() - 0.5) * 520}px`);
+        img.style.setProperty("--y", `${(Math.random() - 0.5) * 380}px`);
+        img.style.setProperty("--r", `${(Math.random() - 0.5) * 120}deg`);
+        img.style.setProperty("--delay", `${180 + i * 34}ms`);
+        emojiBurst.appendChild(img);
+        setTimeout(() => img.remove(), 2300);
+      }
+    }
+
+    let enteringPortfolio = false;
+
+    function enterPortfolio() {
+      if (enteringPortfolio) return;
+      enteringPortfolio = true;
+      playEmojiBurst();
+      setTimeout(() => {
+        profilePage.classList.remove("active");
+        homePage.classList.add("active");
+        enteringPortfolio = false;
+      }, 900);
+    }
+
+    window.enterPortfolio = enterPortfolio;
+
+    profilePage.addEventListener("click", (e) => {
+      if (e.target.closest(".profile-tap") || e.target.closest(".avatar-ring")) {
+        enterPortfolio();
+      }
+    });
+
+    profileTap.addEventListener("pointerdown", enterPortfolio);
+
+    academicsBtn.addEventListener("click", () => switchPage(academicsPage));
+    linksBtn.addEventListener("click", () => switchPage(linksPage));
+    supportBtn.addEventListener("click", () => switchPage(supportPage));
+
+    document.querySelectorAll(".page-back").forEach(btn => {
+      btn.addEventListener("click", () => switchPage(homePage));
+    });
+
+    function resizeCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const width = journeyInner ? journeyInner.offsetWidth : window.innerWidth;
+      const height = journeyInner ? journeyInner.offsetHeight : window.innerHeight;
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      if (overlay.classList.contains("active")) placeMilestones();
+    });
+    resizeCanvas();
+
+    function spark(x, y) {
+      particles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 0.55,
+        vy: (Math.random() - 0.5) * 0.55,
+        life: 28,
+        size: Math.random() * 1.1 + 0.55
+      });
+    }
+
+    function draw() {
+      const width = journeyInner ? journeyInner.offsetWidth : window.innerWidth;
+      const height = journeyInner ? journeyInner.offsetHeight : window.innerHeight;
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 1;
+        ctx.globalAlpha = Math.max(p.life / 28, 0);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 211, 158, 0.72)";
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "rgba(255, 190, 122, 0.45)";
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        if (p.life <= 0) particles.splice(index, 1);
+      });
+
+      animationFrame = requestAnimationFrame(draw);
+    }
+
+    function svgPointToScreen(svg, point) {
+      const pt = svg.createSVGPoint();
+      pt.x = point.x;
+      pt.y = point.y;
+      const matrix = svg.getScreenCTM();
+      const innerRect = journeyInner.getBoundingClientRect();
+      if (!matrix) return { x: point.x, y: point.y };
+      const screen = pt.matrixTransform(matrix);
+      return { x: screen.x - innerRect.left, y: screen.y - innerRect.top };
+    }
+
+    function revealCard(index) {
+      document.querySelectorAll(".chapter-card[data-card]").forEach(card => card.classList.remove("show"));
+      const card = document.querySelector(`[data-card="${index}"]`);
+      if (card) card.classList.add("show");
+    }
+
+    function createMobileJourney() {
+      mobileJourneyList.innerHTML = "";
+      chapters.forEach((chapter, index) => {
+        const card = document.createElement("article");
+        card.className = "chapter-card mobile-chapter-card";
+        card.dataset.mobileCard = String(index);
+        card.innerHTML = `<span class="mobile-dot"></span><h3>${chapter.year}</h3><h2>${chapter.title}</h2><p>${chapter.text}</p>`;
+        mobileJourneyList.appendChild(card);
+        setTimeout(() => card.classList.add("show"), 260 + index * 90);
+      });
+    }
+
+    function placeMilestones() {
+      milestonesWrap.innerHTML = "";
+      chapterCards.innerHTML = "";
+      mobileJourneyList.innerHTML = "";
+
+      if (window.innerWidth <= 650) {
+        createMobileJourney();
+        return;
+      }
+
+      const len = roadGlow.getTotalLength();
+      const cardW = window.innerWidth < 900 ? 190 : 210;
+      const cardH = 128;
+      const nearGap = 28;
+      const safeTop = 150;
+      const safeLeft = 18;
+      const safeRight = journeyInner.offsetWidth - 18;
+      const safeBottom = journeyInner.offsetHeight - 24;
+
+      chapters.forEach((chapter, index) => {
+        const pathPoint = roadGlow.getPointAtLength(len * chapter.t);
+        const pos = svgPointToScreen(roadSvg, pathPoint);
+
+        const dot = document.createElement("button");
+        dot.className = "milestone";
+        dot.type = "button";
+        dot.style.left = `${pos.x}px`;
+        dot.style.top = `${pos.y}px`;
+        dot.setAttribute("aria-label", chapter.title);
+        dot.addEventListener("click", (e) => {
+          e.stopPropagation();
+          revealCard(index);
+        });
+        milestonesWrap.appendChild(dot);
+
+        const card = document.createElement("article");
+        card.className = "chapter-card";
+        card.dataset.card = String(index);
+        card.style.setProperty("--card-width", `${cardW}px`);
+        card.innerHTML = `<h3>${chapter.year}</h3><h2>${chapter.title}</h2><p>${chapter.text}</p>`;
+
+        let left = pos.x - cardW / 2;
+        let top = chapter.side === "above" ? pos.y - cardH - nearGap : pos.y + nearGap;
+
+        left = Math.max(safeLeft, Math.min(left, safeRight - cardW));
+        top = Math.max(safeTop, Math.min(top, safeBottom - cardH));
+
+        card.style.left = `${left}px`;
+        card.style.top = `${top}px`;
+        chapterCards.appendChild(card);
+
+        card.addEventListener("click", (e) => e.stopPropagation());
+        setTimeout(() => dot.classList.add("show"), 4300 + index * 55);
+      });
+    }
+
+    function startJourney() {
+      const path = roadGlow;
+      const len = path.getTotalLength();
+      const startTime = performance.now();
+      const duration = 5200;
+      running = true;
+
+      fireDot.style.opacity = "1";
+      roadGlow.style.strokeDashoffset = "1";
+      roadSvg.classList.add("show");
+      placeMilestones();
+      lastRevealedChapter = -1;
+
+      function move(now) {
+        if (!running) return;
+
+        const raw = Math.min((now - startTime) / duration, 1);
+        const ease = raw < 0.5 ? 4 * raw * raw * raw : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+        const pathPoint = path.getPointAtLength(len * ease);
+        const pos = svgPointToScreen(roadSvg, pathPoint);
+
+        fireDot.style.left = `${pos.x}px`;
+        fireDot.style.top = `${pos.y}px`;
+        roadGlow.style.strokeDashoffset = String(1 - ease);
+
+        if (Math.random() > 0.55) spark(pos.x, pos.y);
+
+        chapters.forEach((chapter, index) => {
+          if (ease >= chapter.t && index > lastRevealedChapter) {
+            revealCard(index);
+            lastRevealedChapter = index;
+          }
+        });
+
+        if (raw < 1) {
+          journeyAnim = requestAnimationFrame(move);
+        } else {
+          fireDot.style.opacity = "0";
+          hint.classList.add("show");
+          closeBtn.classList.add("show");
+        }
+      }
+
+      journeyAnim = requestAnimationFrame(move);
+    }
+
+    function openJourney() {
+      overlay.classList.add("active");
+      journeyTitle.classList.remove("show");
+      journeySubtitle.classList.remove("show");
+      hint.classList.remove("show");
+      closeBtn.classList.remove("show");
+      roadSvg.classList.remove("show");
+      milestonesWrap.innerHTML = "";
+      chapterCards.innerHTML = "";
+      mobileJourneyList.innerHTML = "";
+      particles = [];
+      running = false;
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(journeyAnim);
+      resizeCanvas();
+      ctx.clearRect(0, 0, journeyInner.offsetWidth, journeyInner.offsetHeight);
+      draw();
+      setTimeout(() => {
+        journeyTitle.classList.add("show");
+        journeySubtitle.classList.add("show");
+      }, 450);
+      setTimeout(startJourney, 500);
+    }
+
+    journeyBtn.addEventListener("click", openJourney);
+
+    overlay.addEventListener("click", (e) => {
+      if (!e.target.closest(".chapter-card") && !e.target.closest(".milestone")) {
+        document.querySelectorAll(".chapter-card[data-card]").forEach(card => card.classList.remove("show"));
+      }
+    });
+
+    closeBtn.addEventListener("click", () => {
+      running = false;
+      overlay.classList.remove("active");
+      journeyTitle.classList.remove("show");
+      journeySubtitle.classList.remove("show");
+      hint.classList.remove("show");
+      closeBtn.classList.remove("show");
+      roadSvg.classList.remove("show");
+      fireDot.style.opacity = "0";
+      milestonesWrap.innerHTML = "";
+      chapterCards.innerHTML = "";
+      mobileJourneyList.innerHTML = "";
+      particles = [];
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(journeyAnim);
+      ctx.clearRect(0, 0, journeyInner.offsetWidth, journeyInner.offsetHeight);
+    });
+  </script>
+</body>
+</html>
